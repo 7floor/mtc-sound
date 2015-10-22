@@ -33,33 +33,6 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     private static final String PACKAGE_NAME = "com.sevenfloor.mtcsound";
     private static IMtcSoundService service;
 
-    private static IMtcSoundService getService() {
-        if (service != null) {
-            return service;
-        }
-        service = IMtcSoundService.Stub.asInterface(ServiceManager.getService(MtcSoundService.SERVICE_NAME));
-        return service;
-    }
-
-    private static void startEqualizer(Context context) {
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            context.startActivity(intent);
-        }
-    }
-
-    private static void stopEqualizer(Context context){
-        context.sendBroadcast(new Intent("com.microntek.ampclose"));
-    }
-
-    private static boolean isEqualizerOnTop(Context context) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
-        ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
-        return componentInfo.getPackageName().equals(PACKAGE_NAME);
-    }
-
     // use only for injection into system server
     private static MtcSoundService serviceInstance;
 
@@ -71,7 +44,9 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     protected final void afterHookedMethod(final XC_MethodHook.MethodHookParam param) {
                         try {
                             Context context = (Context) param.getResult();
+                            XposedBridge.log(String.format("Creating service \"%s\"", MtcSoundService.SERVICE_NAME));
                             serviceInstance = new MtcSoundService(context);
+                            XposedBridge.log(String.format("Installing service \"%s\" into ServiceManager", MtcSoundService.SERVICE_NAME));
                             ServiceManager.addService(MtcSoundService.SERVICE_NAME, serviceInstance);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
@@ -85,7 +60,9 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected final void afterHookedMethod(final MethodHookParam param) {
                         try {
-                            serviceInstance.systemReady();
+                            XposedBridge.log(String.format("System ready. Initializing service \"%s\"", MtcSoundService.SERVICE_NAME));
+                            serviceInstance.initialize();
+                            XposedBridge.log(String.format("The Sound Control Status is: %s", getService().getParameters("av_control_mode=")));
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -104,7 +81,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                         try {
                             return getService().getParameters((String) methodHookParam.args[0]);
                         } catch (RemoteException e) {
-                            XposedBridge.log("Can't call getParameters() on CscService due to " + e);
+                            XposedBridge.log("Can't call getParameters() on MtcSoundService due to " + e);
                             return "";
                         }
                     }
@@ -117,13 +94,13 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                         try {
                             getService().setParameters((String) methodHookParam.args[0]);
                         } catch (RemoteException e) {
-                            XposedBridge.log("Can't call setParameters() on CscService due to " + e);
+                            XposedBridge.log("Can't call setParameters() on MtcSoundService due to " + e);
                         }
                         return null;
                     }
                 }
         );
-
+/*
         findAndHookMethod("android.media.AudioManager", loadPackageParam.classLoader, "requestAudioFocus",
                 OnAudioFocusChangeListener.class, int.class, int.class,
                 new XC_MethodHook() {
@@ -161,34 +138,44 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 }
         );
-
+*/
         // patch the MTCManager to launch the new equalizer with hardware EQ button instead of switching eq presets that are not supported anymore
         if (loadPackageParam.packageName.equals("android.microntek.service")) {
-            findAndHookMethod("android.microntek.service.MicrontekServer", loadPackageParam.classLoader, "EQSwitch",
-                    new XC_MethodReplacement() {
-                        @Override
-                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                            Context context = (Context) methodHookParam.thisObject;
-                            if (isEqualizerOnTop(context)) {
-                                stopEqualizer(context);
-                            } else {
-                                startEqualizer(context);
+            try {
+                XposedBridge.log("Patching android.microntek.service.MicrontekServer");
+                findAndHookMethod("android.microntek.service.MicrontekServer", loadPackageParam.classLoader, "EQSwitch",
+                        new XC_MethodReplacement() {
+                            @Override
+                            protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                                Context context = (Context) methodHookParam.thisObject;
+                                if (isEqualizerOnTop(context)) {
+                                    stopEqualizer(context);
+                                } else {
+                                    startEqualizer(context);
+                                }
+                                return null;
                             }
-                            return null;
-                        }
-                    });
+                        });
+            } catch (XposedHelpers.ClassNotFoundError e) {
+                XposedBridge.log("Wrong Device: class android.microntek.service.MicrontekServer not found.");
+            }
         }
 
         // Patch MtcAmpSetup to launch our package
         if (loadPackageParam.packageName.equals("com.android.settings")) {
-            findAndHookMethod("com.android.settings.MtcAmpSetup", loadPackageParam.classLoader, "isPackageInstalled",
-                    String.class,
-                    PackageManager.class,
-                    mtcAmpSetupParameterReplacer());
+            try {
+                XposedBridge.log("Patching com.android.settings.MtcAmpSetup");
+                findAndHookMethod("com.android.settings.MtcAmpSetup", loadPackageParam.classLoader, "isPackageInstalled",
+                        String.class,
+                        PackageManager.class,
+                        mtcAmpSetupParameterReplacer());
 
-            findAndHookMethod("com.android.settings.MtcAmpSetup", loadPackageParam.classLoader, "RunApp",
-                    String.class,
-                    mtcAmpSetupParameterReplacer());
+                findAndHookMethod("com.android.settings.MtcAmpSetup", loadPackageParam.classLoader, "RunApp",
+                        String.class,
+                        mtcAmpSetupParameterReplacer());
+            } catch (XposedHelpers.ClassNotFoundError e) {
+                XposedBridge.log("Wrong Device: class com.android.settings.MtcAmpSetup not found.");
+            }
         }
     }
 
@@ -200,6 +187,33 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     param.args[0] = PACKAGE_NAME;
             }
         };
+    }
+
+    private static IMtcSoundService getService() {
+        if (service != null) {
+            return service;
+        }
+        service = IMtcSoundService.Stub.asInterface(ServiceManager.getService(MtcSoundService.SERVICE_NAME));
+        return service;
+    }
+
+    private static void startEqualizer(Context context) {
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            context.startActivity(intent);
+        }
+    }
+
+    private static void stopEqualizer(Context context){
+        context.sendBroadcast(new Intent("com.microntek.ampclose"));
+    }
+
+    private static boolean isEqualizerOnTop(Context context) {
+        ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
+        ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
+        return componentInfo.getPackageName().equals(PACKAGE_NAME);
     }
 
     //--------------------

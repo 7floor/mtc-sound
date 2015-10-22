@@ -17,7 +17,7 @@ public class MtcSoundService extends IMtcSoundService.Stub {
         this.context = context;
     }
 
-    public void systemReady() {
+    public void initialize() {
         device = new Device(context);
     }
 

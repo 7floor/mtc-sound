@@ -25,6 +25,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':stubs')
     compile project(':library')
+    provided project(':stubs')
 }
