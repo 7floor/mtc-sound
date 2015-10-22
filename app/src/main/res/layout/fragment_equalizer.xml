@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/fragment_padding"
+        android:baselineAligned="false">
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"/>
+        <LinearLayout android:orientation="vertical"
+            android:layout_width="0px"
+            android:layout_weight="4"
+            android:layout_height="match_parent">
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/top_afc_grid_padding" /> <!-- -20..+20 - 90px; -30 .. +30 - 19px -->
+            <com.sevenfloor.mtcsound.ui.controls.AfcChart
+                android:id="@+id/afcChart" android:layout_height="0px" android:layout_width="match_parent" android:layout_weight="1"/>
+            <Space
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/bottom_afc_grid_padding" /> <!-- -20..+20 - 163px; -30 .. +30 - 93px -->
+        </LinearLayout>
+        <Space
+            android:layout_width="0px"
+            android:layout_height="match_parent"
+            android:layout_weight="1.5"/>
+    </LinearLayout>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/equalizer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    android:padding="@dimen/fragment_padding"
+    android:baselineAligned="false">
+
+    <!-- preamp band start -->
+    <LinearLayout android:orientation="vertical" android:layout_weight="1" android:layout_width="0px" android:layout_height="match_parent" android:gravity="center">
+        <TextView style="@style/large_label" android:text="@string/eq_label_preamp" />
+        <TextView style="@style/large_label" android:id="@+id/preamp_v" android:text="@string/eq_label_zero" />
+        <FrameLayout android:layout_width="match_parent" android:layout_height="0px" android:layout_weight="1">
+            <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center|end" android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/round_controls_fixed_size" android:paddingTop="@dimen/eq_gain_db_padding" android:paddingBottom="@dimen/eq_gain_db_padding">
+                <TextView style="@style/medium_label" android:text="@string/eq_label_plus_20db" />
+                <Space android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="0px"/>
+                <TextView style="@style/medium_label" android:text="@string/eq_label_0db" />
+            </LinearLayout>
+            <com.sevenfloor.mtcsound.ui.controls.VerticalSeekBar
+                style="@style/seek_bar_v"
+                android:id="@+id/seekBarPreamp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:max="20"/>
+        </FrameLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+            <TextView android:visibility="invisible" style="@style/small_label"/>
+            <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+                    android:visibility="invisible" style="@style/seek_bar_h" android:layout_height="wrap_content" android:layout_width="wrap_content" />
+                <TextView style="@style/medium_label" android:text="@string/eq_label_frequency" android:layout_gravity="center_vertical|end"/>
+            </FrameLayout>
+            <TextView android:visibility="invisible" style="@style/small_label"/>
+            <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+                <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+                    android:visibility="invisible" style="@style/seek_bar_h" android:layout_height="wrap_content" android:layout_width="wrap_content" />
+                <TextView style="@style/medium_label" android:text="@string/eq_label_q_hicut" android:layout_gravity="center_vertical|end"/>
+            </FrameLayout>
+        </LinearLayout>
+    </LinearLayout>
+    <!-- preamp band end -->
+
+    <!-- bass band start -->
+    <LinearLayout android:orientation="vertical" android:layout_weight="1" android:layout_width="0px" android:layout_height="match_parent" android:gravity="center">
+        <TextView style="@style/large_label" android:text="@string/eq_label_bass" />
+        <TextView style="@style/large_label" android:id="@+id/bass_v" android:text="@string/eq_label_zero" />
+        <FrameLayout android:layout_width="match_parent" android:layout_height="0px" android:layout_weight="1">
+            <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center|end" android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/round_controls_fixed_size" android:paddingTop="@dimen/eq_gain_db_padding" android:paddingBottom="@dimen/eq_gain_db_padding">
+                <TextView style="@style/medium_label" android:text="@string/eq_label_plus_20db" />
+                <Space android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="0px"/>
+                <TextView style="@style/medium_label" android:text="@string/eq_label_0db" />
+                <Space android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="0px"/>
+                <TextView style="@style/medium_label" android:text="@string/eq_label_minus_20db" />
+            </LinearLayout>
+            <com.sevenfloor.mtcsound.ui.controls.VerticalSeekBar
+                style="@style/seek_bar_v"
+                android:id="@+id/seekBarBassG"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:progress="20"
+                android:max="40"/>
+        </FrameLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_bass_f1" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_bass_f2" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_bass_f3" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_bass_f4" />
+        </LinearLayout>
+        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+            style="@style/seek_bar_h"
+            android:id="@+id/seekBarBassF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="3"/>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_bass_q1" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_bass_q2" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_bass_q3" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_bass_q4" />
+        </LinearLayout>
+        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+            style="@style/seek_bar_h"
+            android:id="@+id/seekBarBassQ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="3"/>
+    </LinearLayout>
+    <!-- bass band end -->
+
+    <!-- middle band start -->
+    <LinearLayout android:orientation="vertical" android:layout_weight="1" android:layout_width="0px" android:layout_height="match_parent" android:gravity="center">
+        <TextView style="@style/large_label" android:text="@string/eq_label_middle" />
+        <TextView style="@style/large_label" android:id="@+id/middle_v" android:text="@string/eq_label_zero" />
+        <FrameLayout android:layout_width="match_parent" android:layout_height="0px" android:layout_weight="1">
+            <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center|end" android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/round_controls_fixed_size" android:paddingTop="@dimen/eq_gain_db_padding" android:paddingBottom="@dimen/eq_gain_db_padding">
+                <TextView style="@style/medium_label" android:text="@string/eq_label_plus_20db" />
+                <Space android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="0px"/>
+                <TextView style="@style/medium_label" android:text="@string/eq_label_0db" />
+                <Space android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="0px"/>
+                <TextView style="@style/medium_label" android:text="@string/eq_label_minus_20db" />
+            </LinearLayout>
+            <com.sevenfloor.mtcsound.ui.controls.VerticalSeekBar
+                style="@style/seek_bar_v"
+                android:id="@+id/seekBarMiddleG"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:progress="20"
+                android:max="40"/>
+        </FrameLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_middle_f1" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_middle_f2" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_middle_f3" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_middle_f4" />
+        </LinearLayout>
+        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+            style="@style/seek_bar_h"
+            android:id="@+id/seekBarMiddleF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="3"/>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_middle_q1" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_middle_q2" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_middle_q3" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_middle_q4" />
+        </LinearLayout>
+        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+            style="@style/seek_bar_h"
+            android:id="@+id/seekBarMiddleQ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="3"/>
+    </LinearLayout>
+    <!-- middle band end -->
+
+    <!-- treble band start -->
+    <LinearLayout android:orientation="vertical" android:layout_weight="1" android:layout_width="0px" android:layout_height="match_parent" android:gravity="center">
+        <TextView style="@style/large_label" android:text="@string/eq_label_treble" />
+        <TextView style="@style/large_label" android:id="@+id/treble_v" android:text="@string/eq_label_zero" />
+        <FrameLayout android:layout_width="match_parent" android:layout_height="0px" android:layout_weight="1">
+            <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center|end" android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/round_controls_fixed_size" android:paddingTop="@dimen/eq_gain_db_padding" android:paddingBottom="@dimen/eq_gain_db_padding">
+                <TextView style="@style/medium_label" android:text="@string/eq_label_plus_20db" />
+                <Space android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="0px"/>
+                <TextView style="@style/medium_label" android:text="@string/eq_label_0db" />
+                <Space android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="0px"/>
+                <TextView style="@style/medium_label" android:text="@string/eq_label_minus_20db" />
+            </LinearLayout>
+            <com.sevenfloor.mtcsound.ui.controls.VerticalSeekBar
+                style="@style/seek_bar_v"
+                android:id="@+id/seekBarTrebleG"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:progress="20"
+                android:max="40"/>
+        </FrameLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_treble_f1" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_treble_f2" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_treble_f3" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_trenle_f4" />
+        </LinearLayout>
+        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+            style="@style/seek_bar_h"
+            android:id="@+id/seekBarTrebleF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="3"/>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_treble_q1" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_treble_q2" />
+        </LinearLayout>
+        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+            style="@style/seek_bar_h"
+            android:id="@+id/seekBarTrebleQ"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="1"/>
+    </LinearLayout>
+    <!-- treble band end -->
+
+    <!-- loud band start -->
+    <LinearLayout android:orientation="vertical" android:layout_weight="1" android:layout_width="0px" android:layout_height="match_parent" android:gravity="center">
+        <TextView style="@style/large_label" android:text="@string/eq_label_loud" />
+        <TextView style="@style/large_label" android:id="@+id/loud_v" android:text="@string/eq_label_zero" />
+        <FrameLayout android:layout_width="match_parent" android:layout_height="0px" android:layout_weight="1">
+            <LinearLayout android:orientation="vertical" android:layout_width="wrap_content" android:layout_height="match_parent" android:gravity="center|end" android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/round_controls_fixed_size" android:paddingTop="@dimen/eq_gain_db_padding" android:paddingBottom="@dimen/eq_gain_db_padding">
+                <TextView style="@style/medium_label" android:text="@string/eq_label_plus_20db" />
+                <Space android:layout_weight="1" android:layout_width="wrap_content" android:layout_height="0px"/>
+                <TextView style="@style/medium_label" android:text="@string/eq_label_0db" />
+            </LinearLayout>
+            <com.sevenfloor.mtcsound.ui.controls.VerticalSeekBar
+                style="@style/seek_bar_v"
+                android:id="@+id/seekBarLoudG"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:max="20"/>
+        </FrameLayout>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_loud_f1" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_loud_f2" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_loud_f3" />
+        </LinearLayout>
+        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+            style="@style/seek_bar_h"
+            android:id="@+id/seekBarLoudF"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="2"/>
+        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_loud_h1" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_loud_h2" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_loud_h3" />
+            <TextView
+                style="@style/small_label"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:text="@string/eq_loud_h4" />
+        </LinearLayout>
+        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+            style="@style/seek_bar_h"
+            android:id="@+id/seekBarLoudHC"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="3"/>
+    </LinearLayout>
+    <!-- loud band end -->
+
+    <!-- right controls start -->
+    <LinearLayout android:orientation="vertical" android:layout_weight="1" android:layout_width="0px" android:layout_height="match_parent" android:gravity="center_horizontal|top">
+        <TextView style="@style/large_label" android:text="@string/eq_current_input_label" android:layout_width="match_parent"/>
+        <TextView style="@style/large_label" android:id="@+id/current_input" android:text="@string/eq_label_zero" android:layout_width="match_parent"/>
+        <CheckBox
+            style="@style/medium_label"
+            android:id="@+id/mute_on"
+            android:layout_marginTop="@dimen/checkbox_top_margin"
+            android:button="@null"
+            android:drawableTop="@drawable/radiobutton"
+            android:layout_width="match_parent"
+            android:text="@string/eq_button_mute" />
+        <CheckBox
+            style="@style/medium_label"
+            android:id="@+id/loud_on"
+            android:layout_marginTop="@dimen/checkbox_top_margin"
+            android:button="@null"
+            android:drawableTop="@drawable/radiobutton"
+            android:layout_width="match_parent"
+            android:text="@string/eq_button_loud" />
+        <CheckBox
+            style="@style/medium_label"
+            android:id="@+id/equalizer_on"
+            android:layout_marginTop="@dimen/checkbox_top_margin"
+            android:button="@null"
+            android:drawableTop="@drawable/radiobutton"
+            android:layout_width="match_parent"
+            android:text="@string/eq_button_equalizer" />
+    </LinearLayout>
+    <!-- right controls end -->
+
+</LinearLayout>
+</FrameLayout>

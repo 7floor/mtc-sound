@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Звук</string>
+    <string name="balance_button_front">Вперед</string>
+    <string name="balance_button_left">Влево</string>
+    <string name="balance_button_rear">Назад</string>
+    <string name="balance_button_reset">Сброс</string>
+    <string name="balance_button_right">Вправо</string>
+    <string name="eq_label_preamp">Усиление</string>
+    <string name="nav_button_balance">Баланс</string>
+    <string name="nav_button_equalizer">Эквалайзер</string>
+    <string name="nav_button_settings">Настройки</string>
+    <string name="eq_button_equalizer">Эквалайзер</string>
+    <string name="eq_button_loud">Тонкомп.</string>
+    <string name="eq_button_mute">Тихо</string>
+    <string name="eq_label_bass">Низкие</string>
+    <string name="eq_label_frequency">Частота</string>
+    <string name="eq_label_loud">Тонкомп.</string>
+    <string name="eq_label_middle">Средние</string>
+    <string name="eq_label_q_hicut">Добротн. / HiCut</string>
+    <string name="eq_label_treble">Высокие</string>
+    <string name="eq_current_input_label">Вход</string>
+
+    <string name="setup_sub">Сабвуфер</string>
+    <string name="setup_sub_cut">Срез ФНЧ</string>
+    <string name="setup_sub_cut0">Откл.</string>
+    <string name="setup_sub_lpf_gain">Уровень ФНЧ</string>
+    <string name="setup_sub_out">Выход</string>
+    <string name="setup_sub_out_front">Фронт</string>
+    <string name="setup_sub_out_lpf">ФНЧ</string>
+    <string name="setup_sub_out_rear">Тыл</string>
+    <string name="setup_sub_phase">Фаза</string>
+    <string name="setup_vol">Громкость</string>
+    <string name="setup_vol_max_gain">Максимальный уровень</string>
+    <string name="setup_vol_min_gain">Минимальный уровень</string>
+    <string name="setup_other">Прочее</string>
+    <string name="setup_button_altnavi">Альт. микс Навигации</string>
+
+    <string name="input_phone">Телефон</string>
+    <string name="input_sys">Система</string>
+    <string name="input_gsm_bt">Bluetooth</string>
+    <string name="input_dtv">DTV</string>
+    <string name="input_dvd">DVD</string>
+    <string name="input_line">Линейный</string>
+    <string name="input_fm">Радио</string>
+    <string name="input_ipod">iPod</string>
+
+    <string name="patch_info">ВНИМАНИЕ!\n\nЭто приложение не будет работать: %s.\nЧтобы оно заработало, необходимо:\n1. Установить патч.\n2. Произвести аппаратную доработку устройства.\nЕсли у вас есть это приложение, вероятно, вы знаете, где взять первое и как сделать второе.\nЕсли же нет, попробуйте поискать на форумах 4pda.ru и xda-developers.com.\nЕсли нет желания всем этим заниматься, просто удалите это приложение для восстановления работоспособности.</string>
+    <string name="patch_info_reason_no_patch">Патч не установлен</string>
+    <string name="patch_info_reason_no_i2c_control">Отсутствует управление звуковым процессором</string>
+
+</resources>

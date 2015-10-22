@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/settings"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="start"
+    android:padding="@dimen/fragment_padding">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="0px"
+        android:layout_weight="1">
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <TextView style="@style/large_label" android:layout_marginTop="@dimen/setup_header_margin" android:text="@string/setup_sub"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+                        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_out_lpf" />
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_out_front" />
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_out_rear" />
+                        </LinearLayout>
+                        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+                            style="@style/seek_bar_h"
+                            android:id="@+id/seekBarSubOut"
+                            android:layout_width="@dimen/settings_sub_out_width"
+                            android:layout_height="wrap_content"
+                            android:max="2"/>
+                        <TextView
+                            style="@style/medium_label" android:text="@string/setup_sub_out"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+                        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_cut0" />
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_cut1" />
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_cut2" />
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_cut3" />
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_cut4" />
+                        </LinearLayout>
+                        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+                            style="@style/seek_bar_h"
+                            android:id="@+id/seekBarSubCutOff"
+                            android:layout_width="@dimen/settings_sub_cut_width"
+                            android:layout_height="wrap_content"
+                            android:max="4"/>
+                        <TextView
+                            style="@style/medium_label" android:text="@string/setup_sub_cut"/>
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center">
+                        <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_phase0" />
+                            <TextView
+                                style="@style/small_label"
+                                android:layout_width="0px"
+                                android:layout_weight="1"
+                                android:text="@string/setup_sub_phase180" />
+                        </LinearLayout>
+                        <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+                            style="@style/seek_bar_h"
+                            android:id="@+id/seekBarSubPhase"
+                            android:layout_width="@dimen/settings_sub_phase_width"
+                            android:layout_height="wrap_content"
+                            android:max="1"/>
+                        <TextView
+                            style="@style/medium_label" android:text="@string/setup_sub_phase"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+                        <TextView
+                            style="@style/small_label"
+                            android:text="@string/setup_minus_79db" />
+                        <Space
+                            android:layout_width="0px"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            style="@style/small_label"
+                            android:text="@string/setup_plus_15db" />
+                    </LinearLayout>
+                    <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+                        style="@style/seek_bar_h"
+                        android:id="@+id/seekBarSubGain"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="94"/>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView style="@style/medium_label" android:text="@string/setup_sub_lpf_gain"/>
+                        <TextView style="@style/medium_label" android:id="@+id/subGain" android:layout_marginStart="@dimen/seekbar_paddind_horizontal" android:text="@string/setup_zero_placeholder"/>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+                <TextView style="@style/large_label" android:layout_marginTop="@dimen/setup_header_margin" android:text="@string/setup_vol"/>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+                        <TextView
+                            style="@style/small_label"
+                            android:text="@string/setup_minus_79db" />
+                        <Space
+                            android:layout_width="0px"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            style="@style/small_label"
+                            android:text="@string/setup_plus_15db" />
+                    </LinearLayout>
+                    <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+                        style="@style/seek_bar_h"
+                        android:id="@+id/seekBarVolGainMin"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="94"/>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView style="@style/medium_label" android:text="@string/setup_vol_min_gain"/>
+                        <TextView style="@style/medium_label" android:id="@+id/volMinGain" android:layout_marginStart="@dimen/seekbar_paddind_horizontal" android:text="@string/setup_zero_placeholder"/>
+                    </LinearLayout>
+                </LinearLayout>
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+                    <LinearLayout android:orientation="horizontal" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingLeft="@dimen/seekbar_paddind_horizontal" android:paddingRight="@dimen/seekbar_paddind_horizontal" android:gravity="center">
+                        <TextView
+                            style="@style/small_label"
+                            android:text="@string/setup_minus_79db" />
+                        <Space
+                            android:layout_width="0px"
+                            android:layout_weight="1"
+                            android:layout_height="wrap_content" />
+                        <TextView
+                            style="@style/small_label"
+                            android:text="@string/setup_plus_15db" />
+                    </LinearLayout>
+                    <com.sevenfloor.mtcsound.ui.controls.HorizontalSeekBar
+                        style="@style/seek_bar_h"
+                        android:id="@+id/seekBarVolGainMax"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:max="94"/>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <TextView style="@style/medium_label" android:text="@string/setup_vol_max_gain"/>
+                        <TextView style="@style/medium_label" android:id="@+id/volMaxGain" android:layout_marginStart="@dimen/seekbar_paddind_horizontal" android:text="@string/setup_zero_placeholder"/>
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_horizontal">
+            <TextView style="@style/large_label" android:layout_marginTop="@dimen/setup_header_margin" android:text="@string/setup_other"/>
+            <CheckBox
+                style="@style/medium_label"
+                android:id="@+id/setup_altnavi"
+                android:layout_marginTop="@dimen/checkbox_top_margin"
+                android:button="@null"
+                android:drawableTop="@drawable/radiobutton"
+                android:layout_width="match_parent"
+                android:text="@string/setup_button_altnavi" />
+        </LinearLayout>
+    </LinearLayout>
+    <TextView android:id="@+id/control_status" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_horizontal|bottom"/>
+</LinearLayout>

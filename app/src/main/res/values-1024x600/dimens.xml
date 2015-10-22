@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="navigation_panel_padding">20px</dimen>
+    <dimen name="round_controls_corners_radius">20px</dimen>
+    <dimen name="stroke_thickness">2px</dimen>
+    <dimen name="round_controls_fixed_size">40px</dimen>
+    <dimen name="round_controls_interior_delta">5px</dimen>
+    <dimen name="seekbar_paddind_horizontal">10px</dimen>
+    <dimen name="seekbar_paddind_vertical">5px</dimen>
+    <dimen name="label_large_size">22px</dimen>
+    <dimen name="label_medium_size">16px</dimen>
+    <dimen name="label_small_size">12px</dimen>
+    <dimen name="nav_button_size">80px</dimen>
+    <dimen name="fragment_padding">20px</dimen>
+    <dimen name="checkbox_top_margin">30px</dimen>
+    <dimen name="eq_gain_db_padding">18px</dimen>
+    <dimen name="balance_cross_size">270px</dimen>
+    <dimen name="balance_button_width">150px</dimen>
+    <dimen name="settings_sub_out_width">150px</dimen>
+    <dimen name="settings_sub_cut_width">250px</dimen>
+    <dimen name="settings_sub_phase_width">100px</dimen>
+    <dimen name="radio_padding">20px</dimen>
+    <dimen name="setup_header_margin">25px</dimen>
+    <dimen name="top_afc_grid_padding">19px</dimen>
+    <dimen name="bottom_afc_grid_padding">93px</dimen>
+</resources>

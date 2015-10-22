@@ -1,0 +1,95 @@
+<resources>
+    <string name="app_name">Sound</string>
+    <string name="balance_button_front">Front</string>
+    <string name="balance_button_left">Left</string>
+    <string name="balance_button_right">Right</string>
+    <string name="balance_button_rear">Rear</string>
+    <string name="balance_button_reset">Reset</string>
+    <string name="eq_label_preamp">Preamp</string>
+    <string name="nav_button_equalizer">Equalizer</string>
+    <string name="nav_button_balance">Balance</string>
+    <string name="nav_button_settings">Settings</string>
+    <string name="eq_label_plus_20db" translatable="false">+20</string>
+    <string name="eq_label_0db" translatable="false">0</string>
+    <string name="eq_label_frequency">Frequency</string>
+    <string name="eq_label_q_hicut">Q / HiCut</string>
+    <string name="eq_label_bass">Bass</string>
+    <string name="eq_label_zero" translatable="false">0</string>
+    <string name="eq_label_minus_20db" translatable="false">-20</string>
+    <string name="eq_bass_f1" translatable="false">60</string>
+    <string name="eq_bass_f2" translatable="false">80</string>
+    <string name="eq_bass_f3" translatable="false">100</string>
+    <string name="eq_bass_f4" translatable="false">120</string>
+    <string name="eq_bass_q1" translatable="false">0.5</string>
+    <string name="eq_bass_q2" translatable="false">1.0</string>
+    <string name="eq_bass_q3" translatable="false">1.5</string>
+    <string name="eq_bass_q4" translatable="false">2.0</string>
+    <string name="eq_label_middle">Middle</string>
+    <string name="eq_middle_f1" translatable="false">0k5</string>
+    <string name="eq_middle_f2" translatable="false">1k0</string>
+    <string name="eq_middle_f3" translatable="false">1k5</string>
+    <string name="eq_middle_f4" translatable="false">2k5</string>
+    <string name="eq_middle_q1" translatable="false">0.75</string>
+    <string name="eq_middle_q2" translatable="false">1.0</string>
+    <string name="eq_middle_q3" translatable="false">1.25</string>
+    <string name="eq_middle_q4" translatable="false">1.5</string>
+    <string name="eq_label_treble">Treble</string>
+    <string name="eq_treble_f1" translatable="false">7k5</string>
+    <string name="eq_treble_f2" translatable="false">10k</string>
+    <string name="eq_treble_f3" translatable="false">12k5</string>
+    <string name="eq_trenle_f4" translatable="false">15k</string>
+    <string name="eq_treble_q1" translatable="false">0.75</string>
+    <string name="eq_treble_q2" translatable="false">1.25</string>
+    <string name="eq_label_loud">Loud</string>
+    <string name="eq_loud_f1" translatable="false">250</string>
+    <string name="eq_loud_f2" translatable="false">400</string>
+    <string name="eq_loud_f3" translatable="false">800</string>
+    <string name="eq_loud_h1" translatable="false">1</string>
+    <string name="eq_loud_h2" translatable="false">2</string>
+    <string name="eq_loud_h3" translatable="false">3</string>
+    <string name="eq_loud_h4" translatable="false">4</string>
+    <string name="eq_button_mute">Mute</string>
+    <string name="eq_button_loud">Loud</string>
+    <string name="eq_button_equalizer">Equalizer</string>
+    <string name="eq_current_input_label">Input</string>
+
+    <string name="setup_sub">Subwoofer</string>
+    <string name="setup_sub_out_lpf">LPF</string>
+    <string name="setup_sub_out_front">Front</string>
+    <string name="setup_sub_out_rear">Rear</string>
+    <string name="setup_sub_out">Output</string>
+    <string name="setup_sub_cut0">Off</string>
+    <string name="setup_sub_cut1" translatable="false">55</string>
+    <string name="setup_sub_cut2" translatable="false">85</string>
+    <string name="setup_sub_cut3" translatable="false">120</string>
+    <string name="setup_sub_cut4" translatable="false">160</string>
+    <string name="setup_sub_cut">LPF Cut-off</string>
+    <string name="setup_sub_phase0" translatable="false">0</string>
+    <string name="setup_sub_phase180" translatable="false">180</string>
+    <string name="setup_sub_phase">Phase</string>
+    <string name="setup_minus_79db" translatable="false">-79 dB</string>
+    <string name="setup_plus_15db" translatable="false">+15 dB</string>
+    <string name="setup_sub_lpf_gain">LPF Gain</string>
+    <string name="setup_zero_placeholder" translatable="false">0</string>
+    <string name="setup_vol">Volume</string>
+    <string name="setup_vol_min_gain">Minimum Gain</string>
+    <string name="setup_vol_max_gain">Maximum Gain</string>
+    <string name="setup_other">Other</string>
+    <string name="setup_button_altnavi">Alt. Navigation Mix</string>
+
+    <string name="input_phone">Phone</string>
+    <string name="input_sys">System</string>
+    <string name="input_gsm_bt">Bluetooth</string>
+    <string name="input_dtv">DTV</string>
+    <string name="input_dvd">DVD</string>
+    <string name="input_line">Line</string>
+    <string name="input_fm">Radio</string>
+    <string name="input_ipod">iPod</string>
+    <string name="eq_label_plus_10db" translatable="false">+10</string>
+    <string name="eq_label_minus_10db" translatable="false">-10</string>
+
+    <string name="patch_info">WARNING!\n\nThis software will not work: %s.\nTo make it work, you\'ll have to:\n1. Install a patch.\n2. Make a hardware modification to your unit.\nIf you\'ve got this software, you probably should know already where to get the first and how to make the second.\nIf not, try searching on 4pda.ru and xda-developers.com forums.\nIf you don\'t want to bother, just uninstall this software to restore functionality.</string>
+    <string name="patch_info_reason_no_patch">Patch is not installed</string>
+    <string name="patch_info_reason_no_i2c_control">Unable to control the sound processor</string>
+
+</resources>

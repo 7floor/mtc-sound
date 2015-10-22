@@ -1,0 +1,48 @@
+<resources>
+    <style name="seek_bar_h">
+        <item name="android:progressDrawable">@drawable/seekbar</item>
+        <item name="android:thumb">@drawable/seekbar_thumb</item>
+        <item name="android:minHeight">@dimen/round_controls_fixed_size</item>
+        <item name="android:maxHeight">@dimen/round_controls_fixed_size</item>
+        <item name="android:thumbOffset">0px</item>
+        <item name="android:paddingLeft">@dimen/seekbar_paddind_horizontal</item>
+        <item name="android:paddingRight">@dimen/seekbar_paddind_horizontal</item>
+        <item name="android:paddingTop">@dimen/seekbar_paddind_vertical</item>
+        <item name="android:paddingBottom">@dimen/seekbar_paddind_vertical</item>
+    </style>
+    <style name="seek_bar_v" parent="seek_bar_h">
+    </style>
+    <style name="label">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+    <style name="small_label" parent="label">
+        <item name="android:textSize">@dimen/label_small_size</item>
+    </style>
+    <style name="medium_label" parent="label">
+        <item name="android:textSize">@dimen/label_medium_size</item>
+    </style>
+    <style name="large_label" parent="label">
+        <item name="android:textSize">@dimen/label_large_size</item>
+    </style>
+    <style name="large_glowing" parent="large_label">
+        <item name="android:textColor">#aaff55</item>
+        <item name="android:shadowColor">#33ff33</item>
+        <item name="android:shadowDx">0</item>
+        <item name="android:shadowDy">0</item>
+        <item name="android:shadowRadius">5</item>
+    </style>
+    <style name="button" parent="large_label">
+        <item name="android:gravity">center</item>
+        <item name="android:layout_height">@dimen/round_controls_fixed_size</item>
+        <item name="android:background">@drawable/button</item>
+    </style>
+    <style name="radio" parent="large_label">
+        <item name="android:paddingStart">@dimen/radio_padding</item>
+        <item name="android:button">@drawable/radiobutton</item>
+    </style>
+</resources>

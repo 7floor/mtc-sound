@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:padding="@dimen/navigation_panel_padding"
+    android:gravity="top|center_horizontal"
+    android:background="#80000000">
+    <TextView
+        style="@style/medium_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/navigation_panel_padding"
+        android:gravity="center"
+        android:id="@+id/nav_button_equalizer"
+        android:text="@string/nav_button_equalizer"
+        android:clickable="true"
+        android:onClick="navigationButtonClicked"
+        android:drawableTop="@drawable/nav_button_equalizer" />
+    <TextView
+        style="@style/medium_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/navigation_panel_padding"
+        android:gravity="center"
+        android:id="@+id/nav_button_balance"
+        android:text="@string/nav_button_balance"
+        android:clickable="true"
+        android:onClick="navigationButtonClicked"
+        android:drawableTop="@drawable/nav_button_balance" />
+    <TextView
+        style="@style/medium_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/navigation_panel_padding"
+        android:gravity="center"
+        android:id="@+id/nav_button_settings"
+        android:text="@string/nav_button_settings"
+        android:clickable="true"
+        android:onClick="navigationButtonClicked"
+        android:drawableTop="@drawable/nav_button_settings" />
+</LinearLayout>

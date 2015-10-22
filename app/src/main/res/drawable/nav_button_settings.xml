@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/nav_button"/>
+    <item>
+        <selector>
+            <item android:state_pressed="true" android:drawable="@drawable/nav_button_highlight" />
+            <item android:state_focused="true" android:drawable="@drawable/nav_button_highlight" />
+            <item android:state_selected="true" android:drawable="@drawable/nav_button_highlight" />
+        </selector>
+    </item>
+    <item>
+        <bitmap android:src="@drawable/nav_button_settings_bitmap" android:gravity="center"/>
+    </item>
+</layer-list>
