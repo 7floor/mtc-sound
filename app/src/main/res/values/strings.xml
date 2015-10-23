@@ -91,7 +91,7 @@
     <string name="eq_label_minus_10db" translatable="false">-10</string>
 
     <string name="patch_info">WARNING!\n\nThis software will not work: %s.\nTo make it work, you\'ll have to:\n1. Install a patch.\n2. Make a hardware modification to your unit.\nIf you\'ve got this software, you probably should know already where to get the first and how to make the second.\nIf not, try searching on 4pda.ru and xda-developers.com forums.\nIf you don\'t want to bother, just uninstall this software to restore functionality.</string>
-    <string name="patch_info_reason_no_patch">Patch is not installed</string>
+    <string name="patch_info_reason_no_patch">Patch is not active</string>
     <string name="patch_info_reason_no_i2c_control">Unable to control the sound processor</string>
 
 </resources>
