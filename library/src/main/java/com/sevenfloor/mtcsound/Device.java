@@ -12,7 +12,7 @@ import java.util.Map;
 public class Device {
     private Context context;
     private final Object lock = new Object();
-    private final Map<String, ParameterHandler> handlers = new HashMap<>();;
+    private final Map<String, ParameterHandler> handlers = new HashMap<>();
     private final HwInterface hardware = new HwInterface();
     private final Persister persister = new Persister();
     private boolean stateLoaded = false;

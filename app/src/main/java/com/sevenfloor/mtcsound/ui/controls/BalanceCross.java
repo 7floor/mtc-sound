@@ -25,6 +25,8 @@ public class BalanceCross extends View
     private int screenpx;
     private int screenpy;
     private int thmbw;
+    private Paint foreground, background;
+
 
     public BalanceCross(Context context, AttributeSet attributeset) {
         super(context, attributeset);
@@ -47,6 +49,16 @@ public class BalanceCross extends View
         } finally {
             a.recycle();
         }
+
+        foreground = new Paint();
+        background = new Paint();
+        foreground.setAntiAlias(true);
+        foreground.setStyle(Paint.Style.STROKE);
+        foreground.setStrokeWidth(2);
+        foreground.setColor(0xffffffff);
+        background.setAntiAlias(true);
+        background.setStyle(Paint.Style.FILL);
+        background.setColor(0x80000000);
     }
 
     public void setOnBalanceChangeListener(OnBalanceChangeListener balancechange)
@@ -106,14 +118,7 @@ public class BalanceCross extends View
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Paint foreground = new Paint(), background = new Paint();
-        foreground.setAntiAlias(true);
-        foreground.setStyle(Paint.Style.STROKE);
-        foreground.setStrokeWidth(2);
-        foreground.setColor(0xffffffff);
-        background.setAntiAlias(true);
-        background.setStyle(Paint.Style.FILL);
-        background.setColor(0x80000000);
+
         canvas.save();
         canvas.drawLine(thmbw / 2, height / 2, width - thmbw / 2, height / 2, foreground);
         canvas.drawLine(width / 2, thmbw / 2, width / 2, height - thmbw / 2, foreground);
@@ -161,10 +166,10 @@ public class BalanceCross extends View
 
 
     @Override
-    public boolean onTouchEvent(MotionEvent motionevent)
+    public boolean onTouchEvent(MotionEvent event)
     {
-        int x = (int)motionevent.getX();
-        int y = (int)motionevent.getY();
+        int x = (int)event.getX();
+        int y = (int)event.getY();
         if (x < thmbw / 2)
         {
             x = thmbw / 2;
@@ -181,15 +186,13 @@ public class BalanceCross extends View
         {
             y = height - thmbw / 2;
         }
-        switch(motionevent.getAction()) {
+        switch(event.getAction()) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_MOVE:
                 balanceX = Math.round((float)((x - thmbw / 2) * max) / (width - thmbw));
                 balanceY = Math.round((float)((y - thmbw / 2) * max) / (height - thmbw));
                 setBalance(balanceX,balanceY);
-                //updateThumbView(x, y);
-                //invalidate();
                 break;
         }
         return true;
@@ -202,15 +205,4 @@ public class BalanceCross extends View
             onBalanceChangeListener.onBalanceChange(balanceX, balanceY, 0);
         }
     }
-
-    private void updateThumbView(int xPos, int yPos) {
-        balanceX = ((xPos - thmbw / 2) * max) / (width - thmbw);
-        balanceY = ((yPos - thmbw / 2) * max) / (height - thmbw);
-        screenpx = xPos;
-        screenpy = yPos;
-        if (onBalanceChangeListener != null) {
-            onBalanceChangeListener.onBalanceChange(balanceX, balanceY, 1);
-        }
-    }
-
 }

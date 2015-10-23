@@ -12,14 +12,6 @@ public class Utils {
         }
     }
 
-    public static Integer stringToIntRange(String value, Integer min, Integer max){
-        Integer result = stringToInt(value);
-        if (result == null) return null;
-        if (min != null && result < min) return null;
-        if (max != null && result > max) return null;
-        return result;
-    }
-
     public static Boolean stringToBoolean(String value, String trueValue, String falseValue)
     {
         if (trueValue.equals(value)) return true;
@@ -58,7 +50,6 @@ public class Utils {
     public static void sleep(long millis){
         try {
             Thread.sleep(millis);
-        } catch (InterruptedException e) {
-        }
+        } catch (InterruptedException ignored) { }
     }
 }

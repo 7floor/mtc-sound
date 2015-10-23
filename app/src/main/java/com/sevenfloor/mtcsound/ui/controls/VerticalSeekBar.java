@@ -32,11 +32,11 @@ public class VerticalSeekBar extends CorrectedSeekBar {
     }
 
     @Override
-    protected void onDraw(Canvas c) {
-        c.rotate(-90);
-        c.translate(-getHeight(),0);
+    protected void onDraw(Canvas canvas) {
+        canvas.rotate(-90);
+        canvas.translate(-getHeight(), 0);
 
-        super.onDraw(c);
+        super.onDraw(canvas);
     }
 
     @Override

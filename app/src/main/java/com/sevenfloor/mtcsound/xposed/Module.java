@@ -273,7 +273,6 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 return "Unknown";
         }
     }
-
 }
 
 

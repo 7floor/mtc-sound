@@ -263,7 +263,7 @@ public class HwInterface {
         try {
             Process process = Runtime.getRuntime().exec(new String[]{"su", "-c", "insmod /system/lib/modules/i2c-dev.ko"});
             process.waitFor();
-        } catch (Throwable e) {} // we're not interested
+        } catch (Throwable ignored) {}
     }}
 
 class Register {
