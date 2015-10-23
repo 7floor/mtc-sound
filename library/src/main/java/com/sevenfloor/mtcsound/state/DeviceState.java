@@ -25,6 +25,7 @@ public class DeviceState {
     public final SoundProfile lineProfile = new SoundProfile();
     public final SoundProfile fmProfile = new SoundProfile();
     public final SoundProfile ipodProfile = new SoundProfile();
+    public final SoundProfile dvrProfile = new SoundProfile();
 
     public final Map<Input, SoundProfile> allProfiles = new HashMap<>();
 
@@ -36,6 +37,7 @@ public class DeviceState {
         allProfiles.put(Input.line, lineProfile);
         allProfiles.put(Input.fm, fmProfile);
         allProfiles.put(Input.ipod, ipodProfile);
+        allProfiles.put(Input.dvr, dvrProfile);
     }
 
     public SoundProfile getCurrentProfile() {

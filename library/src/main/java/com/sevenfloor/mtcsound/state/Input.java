@@ -7,5 +7,6 @@ public enum Input {
     line,
     gsm_bt,
     dvd,
-    dtv
+    dtv,
+    dvr
 }

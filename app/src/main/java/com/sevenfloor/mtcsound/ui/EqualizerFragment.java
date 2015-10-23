@@ -113,6 +113,8 @@ public class EqualizerFragment extends BaseFragment implements View.OnClickListe
                 result = resources.getString(R.string.input_dvd);
             } else if ("dtv".equalsIgnoreCase(input)) {
                 result = resources.getString(R.string.input_dtv);
+            } else if ("dvr".equalsIgnoreCase(input)) {
+                result = resources.getString(R.string.input_dvr);
             } else {
                 result = "?";
             }

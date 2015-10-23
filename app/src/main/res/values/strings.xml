@@ -85,6 +85,8 @@
     <string name="input_line">Line</string>
     <string name="input_fm">Radio</string>
     <string name="input_ipod">iPod</string>
+    <string name="input_dvr">DVR</string>
+
     <string name="eq_label_plus_10db" translatable="false">+10</string>
     <string name="eq_label_minus_10db" translatable="false">-10</string>
 

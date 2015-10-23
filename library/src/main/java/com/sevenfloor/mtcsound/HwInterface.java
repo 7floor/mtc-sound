@@ -149,6 +149,7 @@ public class HwInterface {
                 InputSelector.value = 0x82;
                 break;
             case line:
+            case dvr: // ? need to check with the logic analyzer
                 InputSelector.value = 0x83;
                 break;
             case fm:
