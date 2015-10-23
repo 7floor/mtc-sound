@@ -16,7 +16,6 @@ import com.sevenfloor.mtcsound.R;
 public class MainActivity extends Activity {
     private BroadcastReceiver broadcastReceiver;
     private AudioManager audioManager;
-    private boolean i2cMode;
 
     View navigationButtonBalance, navigationButtonEqualizer, navigationButtonSettings;
     BaseFragment equalizerFragment, balanceFragment, settingsFragment;
@@ -26,14 +25,18 @@ public class MainActivity extends Activity {
             @Override
             public void onReceive(Context context, Intent intent) {
                 String action = intent.getAction();
-                if (action.equals("com.microntek.inputchange") ||
-                        action.equals("com.microntek.VOLUME_CHANGED") ||
-                        action.equals("com.microntek.loundchange")) {
-                    updateFragment(equalizerFragment);
-                } else if (action.equals("com.microntek.balancechange")) {
-                    updateFragment(balanceFragment);
-                } else if (action.equals("com.microntek.ampclose")) {
-                    finish();
+                switch (action) {
+                    case "com.microntek.inputchange":
+                    case "com.microntek.VOLUME_CHANGED":
+                    case "com.microntek.loundchange":
+                        updateFragment(equalizerFragment);
+                        break;
+                    case "com.microntek.balancechange":
+                        updateFragment(balanceFragment);
+                        break;
+                    case "com.microntek.ampclose":
+                        finish();
+                        break;
                 }
             }
         };
@@ -46,7 +49,7 @@ public class MainActivity extends Activity {
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         String controlMode =audioManager.getParameters("av_control_mode=");
-        i2cMode = controlMode.startsWith("i2c");
+        boolean i2cMode = controlMode.startsWith("i2c");
 
         navigationButtonEqualizer = findViewById(R.id.nav_button_equalizer);
         navigationButtonBalance = findViewById(R.id.nav_button_balance);

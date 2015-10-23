@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.sevenfloor.mtcsound.R;
 import com.sevenfloor.mtcsound.ui.controls.BalanceCross;
@@ -14,7 +13,6 @@ public class BalanceFragment
         implements View.OnClickListener, BalanceCross.OnBalanceChangeListener {
 
     private BalanceCross balance;
-    private TextView reset;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
