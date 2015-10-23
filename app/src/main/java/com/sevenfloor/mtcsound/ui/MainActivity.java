@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        String controlMode =audioManager.getParameters("av_control_mode=");
+        String controlMode = audioManager.getParameters("av_control_mode=");
         boolean i2cMode = controlMode.startsWith("i2c");
 
         navigationButtonEqualizer = findViewById(R.id.nav_button_equalizer);

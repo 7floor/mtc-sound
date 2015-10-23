@@ -27,7 +27,7 @@ public class Device {
 
 
         i2cMode = checkHardware();
-        if (!i2cMode) return;
+        //if (!i2cMode) return;
         // listen to power, to reapply state
         // on some devices, maybe 3066 it is known to lose system input after return from sleep
         handlers.put("rpt_power", new PowerHandler(this));
