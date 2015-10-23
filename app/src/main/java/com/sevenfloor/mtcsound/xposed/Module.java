@@ -44,9 +44,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     protected final void afterHookedMethod(final XC_MethodHook.MethodHookParam param) {
                         try {
                             Context context = (Context) param.getResult();
-                            XposedBridge.log(String.format("Creating service \"%s\"", MtcSoundService.SERVICE_NAME));
                             serviceInstance = new MtcSoundService(context);
-                            XposedBridge.log(String.format("Installing service \"%s\" into ServiceManager", MtcSoundService.SERVICE_NAME));
                             ServiceManager.addService(MtcSoundService.SERVICE_NAME, serviceInstance);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
@@ -60,7 +58,6 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected final void afterHookedMethod(final MethodHookParam param) {
                         try {
-                            XposedBridge.log(String.format("System ready. Initializing service \"%s\"", MtcSoundService.SERVICE_NAME));
                             serviceInstance.initialize();
                             XposedBridge.log(String.format("The Sound Control Status is: %s", getService().getParameters("av_control_mode=")));
                         } catch (Throwable t) {
@@ -142,7 +139,6 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         // patch the MTCManager to launch the new equalizer with hardware EQ button instead of switching eq presets that are not supported anymore
         if (loadPackageParam.packageName.equals("android.microntek.service")) {
             try {
-                XposedBridge.log("Patching android.microntek.service.MicrontekServer");
                 findAndHookMethod("android.microntek.service.MicrontekServer", loadPackageParam.classLoader, "EQSwitch",
                         new XC_MethodReplacement() {
                             @Override
@@ -164,7 +160,6 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         // Patch MtcAmpSetup to launch our package
         if (loadPackageParam.packageName.equals("com.android.settings")) {
             try {
-                XposedBridge.log("Patching com.android.settings.MtcAmpSetup");
                 findAndHookMethod("com.android.settings.MtcAmpSetup", loadPackageParam.classLoader, "isPackageInstalled",
                         String.class,
                         PackageManager.class,
