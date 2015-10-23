@@ -15,7 +15,7 @@ public class AfcChart extends View {
     private final int chartSteps = 100;
     private int w, h;
     private boolean gridOn;
-    private Paint gridLine, chartLine;
+    private Paint gridLine, chartLine, gridText;
     private Path chartPath;
     private float[] frequencies;
 
@@ -50,6 +50,10 @@ public class AfcChart extends View {
         gridLine.setStyle(Paint.Style.STROKE);
         gridLine.setStrokeWidth(1);
         gridLine.setARGB(0x80, 255, 255, 255);
+
+        gridText = new Paint(gridLine);
+        gridText.setAntiAlias(true);
+        gridText.setARGB(255, 0, 255, 0);
 
         chartLine = new Paint();
         chartLine.setStyle(Paint.Style.STROKE);
@@ -87,12 +91,29 @@ public class AfcChart extends View {
     }
 
     private void drawGrid(Canvas canvas) {
+        final String[] texts = {"10", "100", "1k", "10k", "100k"};
         float y1 = h - (gainPadding) * h / (maxGain - minGain);
         float y2 = h - (maxGain - gainPadding - minGain) * h / (maxGain - minGain);
         for (int i = startFreqFactor; i <= endFreqFactor; i++) {
             for (int j = 1; j < 10; j++) {
                 float x = (float) (Math.log10(Math.pow(10, (i - startFreqFactor)) * j) * (w / (endFreqFactor - startFreqFactor)) + 0.5);
+
                 canvas.drawLine(x, y1, x, y2, gridLine);
+                if (j == 1) {
+                    String label = texts[i - startFreqFactor];
+                    float textWidth = gridText.measureText(label);
+                    switch (i) {
+                        case startFreqFactor:
+                            x = 0;
+                            break;
+                        case endFreqFactor:
+                            x = x - textWidth;
+                            break;
+                        default:
+                            x = x - textWidth / 2;
+                    }
+                    canvas.drawText(label, x, y1, gridText);
+                }
                 if (i == endFreqFactor) break;
             }
         }

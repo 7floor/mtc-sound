@@ -12,7 +12,7 @@ public class GpsAltMixHandler extends ParameterHandler {
     public String set(String value) {
         Boolean x = Utils.stringToBoolean(value, "true", "false");
         if (x == null) return null;
-        device.state.settings.gpsAltMix  = x;
+        device.state.settings.gpsAltMix = x;
         device.applyState();
         return null;
     }
