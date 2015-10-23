@@ -13,7 +13,7 @@ import com.sevenfloor.mtcsound.R;
 public class SettingsFragment extends BaseFragment implements View.OnClickListener, SeekBar.OnSeekBarChangeListener {
 
     private SeekBar subOutput, subCutOff, subPhase, subGain, volMin, volMax;
-    private TextView subGainV, volMinV, volMaxV, status;
+    private TextView subGainV, volMinV, volMaxV;
     private CheckBox altNavi;
 
     @Override
@@ -37,7 +37,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         subGainV = (TextView)view.findViewById(R.id.subGain);
         volMinV = (TextView)view.findViewById(R.id.volMinGain);
         volMaxV = (TextView)view.findViewById(R.id.volMaxGain);
-        status = (TextView)view.findViewById(R.id.control_status);
 
         (altNavi = (CheckBox)view.findViewById(R.id.setup_altnavi)).setOnClickListener(this);
 
@@ -75,7 +74,6 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         subGainV.setText(formatGain(subGain.getProgress() - 79));
         volMinV.setText(formatGain(volMin.getProgress() - 79));
         volMaxV.setText(formatGain(volMax.getProgress() - 79));
-        status.setText(audioManager.getParameters("av_control_mode="));
     }
 
     private String formatGain(int gain) {
