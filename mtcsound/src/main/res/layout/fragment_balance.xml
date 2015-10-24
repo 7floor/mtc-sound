@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:mtcsound="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/balance"
     android:layout_width="match_parent"
@@ -30,7 +30,7 @@
                 android:id="@+id/balanceCross"
                 android:layout_width="@dimen/balance_cross_size"
                 android:layout_height="@dimen/balance_cross_size"
-                app:max="28" app:balanceX="14" app:balanceY="14"
+                mtcsound:max="28" mtcsound:balanceX="14" mtcsound:balanceY="14"
                 android:layout_gravity="center" />
         </FrameLayout>
         <FrameLayout

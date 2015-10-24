@@ -1,1 +1,1 @@
-include ':library', ':app', ':stubs', ':service'
+include ':library', ':mtcsound', ':stubs', ':service'
