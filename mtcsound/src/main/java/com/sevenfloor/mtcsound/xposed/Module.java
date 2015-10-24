@@ -97,7 +97,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 }
         );
-/*
+
         findAndHookMethod("android.media.AudioManager", loadPackageParam.classLoader, "requestAudioFocus",
                 OnAudioFocusChangeListener.class, int.class, int.class,
                 new XC_MethodHook() {
@@ -135,7 +135,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 }
         );
-*/
+
         // patch the MTCManager to launch the new equalizer with hardware EQ button instead of switching eq presets that are not supported anymore
         if (loadPackageParam.packageName.equals("android.microntek.service")) {
             try {
