@@ -18,9 +18,10 @@
         android:id="@+id/av_gps_ontop_enable"
         android:text="av_gps_ontop enable"/>
 
-    <Space
+    <TextView
         android:layout_width="wrap_content"
-        android:layout_height="40dip" />
+        android:layout_height="wrap_content"
+        android:text="-"/>
 
     <CheckBox
         android:layout_width="wrap_content"
@@ -40,15 +41,19 @@
         android:id="@+id/av_gps_ontop"
         android:text="av_gps_ontop"/>
 
-    <Space
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_width="wrap_content"
-        android:layout_height="40dip" />
-
-    <Button
-        android:id="@+id/bnRefresh"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Refresh" />
-
-
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/bnRefresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Refresh" />
+        <Button
+            android:id="@+id/bnBeep"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Beep" />
+    </LinearLayout>
 </LinearLayout>

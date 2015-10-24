@@ -96,6 +96,7 @@ public class HwInterface {
         applyLoudness(profile.loudnessOn, profile);
 
         applyInput(state.inputMode);
+        applyGps(state);
         applyMute(state);
 
         writeRegistersToI2C(forced);
@@ -148,8 +149,8 @@ public class HwInterface {
             case dvd:
                 InputSelector.value = 0x82;
                 break;
-            case line:
             case dvr: // ? need to check with the logic analyzer
+            case line:
                 InputSelector.value = 0x83;
                 break;
             case fm:
@@ -241,6 +242,24 @@ public class HwInterface {
             FaderSubwoofer.value = 0xFF;
             MixingGain.value = 0xFF;
         }
+    }
+
+    private void applyGps(DeviceState state) {
+        // don't change anything for phone and system inputs, they're controlled by default
+        if (state.inputMode.phoneState == PhoneState.answer || state.inputMode.input == Input.sys)
+            return;
+
+        int cut = 0;
+
+        if (state.gpsState.gpsMonitor) {
+            if (state.gpsState.gpsIsAloud)
+                cut = state.gpsState.gpsSwitch ? -100 : -10;
+        } else {
+            cut = state.gpsState.gpsOnTop ? -100 : 0;
+        }
+
+        int db = state.getCurrentVolume().getValueInDb() - cut;
+        VolumeGain.value = (db < -79) ? 0xFF : 128 - db;
     }
 
     private void writeRegistersToI2C(boolean forced) {

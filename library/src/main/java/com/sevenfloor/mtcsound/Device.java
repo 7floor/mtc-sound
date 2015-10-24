@@ -113,6 +113,29 @@ public class Device {
         return String.format("%s=%s", key, value);
     }
 
+    public void onMediaPlayerEvent(String callerPackage, int event) {
+        if (!state.gpsState.gpsMonitor)
+            return;
+        if (!state.gpsState.gpsPackage.equals(callerPackage))
+            return;
+        boolean aloud = state.gpsState.gpsIsAloud;
+        switch (event)
+        {
+            case MEDIA_STARTED:
+                aloud = true;
+                break;
+            case MEDIA_PAUSED:
+            case MEDIA_STOPPED:
+            case MEDIA_PLAYBACK_COMPLETE:
+            case MEDIA_ERROR:
+                aloud = false;
+        }
+        if (aloud != state.gpsState.gpsIsAloud)
+            return;
+        state.gpsState.gpsIsAloud = aloud;
+        applyState();
+    }
+
     public void applyState() {
         applyState(false);
     }
@@ -141,4 +164,10 @@ public class Device {
         state.HardwareStatus = hardware.CheckHardware();
         return state.HardwareStatus.startsWith("i2c");
     }
+
+    private static final int MEDIA_PLAYBACK_COMPLETE = 2;
+    private static final int MEDIA_STARTED = 6;
+    private static final int MEDIA_PAUSED = 7;
+    private static final int MEDIA_STOPPED = 8;
+    private static final int MEDIA_ERROR = 100;
 }

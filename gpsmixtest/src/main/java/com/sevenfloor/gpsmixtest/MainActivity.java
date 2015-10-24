@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,7 +13,7 @@ import android.widget.CheckBox;
 public class MainActivity extends Activity implements View.OnClickListener {
 
     private CheckBox cbPackageEnable, cbOnTopEnable, cbMonitor, cbSwitch, cbOnTop;
-    private Button bnRefresh;
+    private Button bnRefresh, bnBeep;
     private AudioManager am;
     private ContentResolver cr;
 
@@ -27,6 +28,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
         (cbSwitch = (CheckBox)findViewById(R.id.av_gps_switch)).setOnClickListener(this);
         (cbOnTop = (CheckBox)findViewById(R.id.av_gps_ontop)).setOnClickListener(this);
         (bnRefresh = (Button)findViewById(R.id.bnRefresh)).setOnClickListener(this);
+        (bnBeep = (Button)findViewById(R.id.bnBeep)).setOnClickListener(this);
 
         am = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         cr = getContentResolver();
@@ -44,7 +46,12 @@ public class MainActivity extends Activity implements View.OnClickListener {
             case R.id.av_gps_switch: setSwitch(((CheckBox) v).isChecked()); break;
             case R.id.av_gps_ontop: setOntop(((CheckBox) v).isChecked()); break;
             case R.id.bnRefresh: refresh(); break;
+            case R.id.bnBeep: beep(); break;
         }
+    }
+
+    private void beep() {
+        am.playSoundEffect(AudioManager.FX_KEY_CLICK);
     }
 
     private void refresh() {

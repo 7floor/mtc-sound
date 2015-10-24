@@ -5,15 +5,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioManager;
-import android.media.AudioManager.OnAudioFocusChangeListener;
 
 import com.android.server.am.ActivityManagerService;
 import com.sevenfloor.mtcsound.service.IMtcSoundService;
 
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.widget.Toast;
 
 import com.sevenfloor.mtcsound.service.MtcSoundService;
 
@@ -70,9 +69,16 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
+        patchAudioManager(loadPackageParam);
+        patchMediaPlayer(loadPackageParam);
+        patchMTCManager(loadPackageParam);
+        patchMTCAmpSetup(loadPackageParam);
+    }
 
-        // patch the AudioManager
-        findAndHookMethod("android.media.AudioManager", loadPackageParam.classLoader, "getParameters", String.class, new XC_MethodReplacement() {
+    // patch AudioManager to replace getParameters/setParameters
+    private void patchAudioManager(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+
+        findAndHookMethod(AudioManager.class, "getParameters", String.class, new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                         try {
@@ -85,7 +91,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 }
         );
 
-        findAndHookMethod("android.media.AudioManager", loadPackageParam.classLoader, "setParameters", String.class, new XC_MethodReplacement() {
+        findAndHookMethod(AudioManager.class, "setParameters", String.class, new XC_MethodReplacement() {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                         try {
@@ -98,19 +104,17 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 }
         );
 
-        findAndHookMethod("android.media.AudioManager", loadPackageParam.classLoader, "requestAudioFocus",
-                OnAudioFocusChangeListener.class, int.class, int.class,
+    }
+
+    // patch MediaPlayer to let the Service know the start/stop/pause etc. events
+    private void patchMediaPlayer(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+
+        findAndHookMethod(MediaPlayer.class, "start",
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            Context context = (Context)XposedHelpers.getObjectField(param.thisObject, "mContext");
-                            String caller = param.args[0] == null ? "null" : param.args[0].getClass().getName();
-                            int stream = (int)param.args[1];
-                            int hint = (int)param.args[2];
-                            int result = (int)param.getResult();
-                            String text = String.format("requestAudioFocus(%s,%s,%s) == %s", caller, audioFocusStreamName(stream), audioFocusDurationHintName(hint), audioFocusResultName(result));
-                            Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+                            getService().onMediaPlayerEvent(loadPackageParam.packageName, MEDIA_STARTED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -118,17 +122,12 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 }
         );
 
-        findAndHookMethod("android.media.AudioManager", loadPackageParam.classLoader, "abandonAudioFocus",
-                OnAudioFocusChangeListener.class,
+        findAndHookMethod(MediaPlayer.class, "stop",
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            Context context = (Context) XposedHelpers.getObjectField(param.thisObject, "mContext");
-                            String caller = param.args[0] == null ? "null" : param.args[0].getClass().getName();
-                            int result = (int) param.getResult();
-                            String text = String.format("abandonAudioFocus(%s) == %s", caller, audioFocusResultName(result));
-                            Toast.makeText(context, text, Toast.LENGTH_LONG).show();
+                            getService().onMediaPlayerEvent(loadPackageParam.packageName, MEDIA_STOPPED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -136,8 +135,42 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 }
         );
 
-        // patch the MTCManager to launch the new equalizer with hardware EQ button instead of switching eq presets that are not supported anymore
-        if (loadPackageParam.packageName.equals("android.microntek.service")) {
+        findAndHookMethod(MediaPlayer.class, "pause",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            getService().onMediaPlayerEvent(loadPackageParam.packageName, MEDIA_PAUSED);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+
+        findAndHookMethod(MediaPlayer.class, "postEventFromNative",
+                Object.class, int.class, int.class, int.class, Object.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            int event = (int) param.args[1];
+                            if (event != MEDIA_PLAYBACK_COMPLETE && event != MEDIA_ERROR)
+                                return;
+                            getService().onMediaPlayerEvent(loadPackageParam.packageName, event);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+    }
+
+    // patch the MTCManager to launch the new equalizer with hardware EQ button
+    // instead of switching eq presets that are not supported anymore
+    private void patchMTCManager(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+
+        if ("android.microntek.service".equals(loadPackageParam.packageName)) {
             try {
                 findAndHookMethod("android.microntek.service.MicrontekServer", loadPackageParam.classLoader, "EQSwitch",
                         new XC_MethodReplacement() {
@@ -156,9 +189,12 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                 XposedBridge.log("Wrong Device: class android.microntek.service.MicrontekServer not found.");
             }
         }
+    }
 
-        // Patch MtcAmpSetup to launch our package
-        if (loadPackageParam.packageName.equals("com.android.settings")) {
+    // Patch MtcAmpSetup to launch our package
+    private void patchMTCAmpSetup(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+
+        if ("com.android.settings".equals(loadPackageParam.packageName)) {
             try {
                 findAndHookMethod("com.android.settings.MtcAmpSetup", loadPackageParam.classLoader, "isPackageInstalled",
                         String.class,
@@ -211,68 +247,12 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         return componentInfo.getPackageName().equals(PACKAGE_NAME);
     }
 
-    //--------------------
-
-    private String audioFocusDurationHintName(int value) {
-        switch (value) {
-            case AudioManager.AUDIOFOCUS_GAIN:
-                return "AUDIOFOCUS_GAIN";
-            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT:
-                return "AUDIOFOCUS_GAIN_TRANSIENT";
-            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE:
-                return "AUDIOFOCUS_GAIN_TRANSIENT_EXCLUSIVE";
-            case AudioManager.AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK:
-                return "AUDIOFOCUS_GAIN_TRANSIENT_MAY_DUCK";
-            case AudioManager.AUDIOFOCUS_LOSS:
-                return "AUDIOFOCUS_LOSS";
-            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                return "AUDIOFOCUS_LOSS_TRANSIENT";
-            case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                return "AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK";
-            case 0:
-                return "AUDIOFOCUS_NONE";
-            default:
-                return "Unknown";
-        }
-    }
-
-    private String audioFocusStreamName(int value) {
-        switch (value) {
-            case AudioManager.STREAM_ALARM:
-                return "STREAM_ALARM";
-            case 6:
-                return "STREAM_BLUETOOTH_SCO";
-            case AudioManager.STREAM_DTMF:
-                return "STREAM_DTMF";
-            case AudioManager.STREAM_MUSIC:
-                return "STREAM_MUSIC";
-            case AudioManager.STREAM_NOTIFICATION:
-                return "STREAM_NOTIFICATION";
-            case AudioManager.STREAM_RING:
-                return "STREAM_RING";
-            case AudioManager.STREAM_SYSTEM:
-                return "STREAM_SYSTEM";
-            case 7:
-                return "STREAM_SYSTEM_ENFORCED";
-            case 9:
-                return "STREAM_TTS";
-            case 0:
-                return "STREAM_VOICE_CALL";
-            default:
-                return "Unknown";
-        }
-    }
-
-    private String audioFocusResultName(int value) {
-        switch (value) {
-            case AudioManager.AUDIOFOCUS_REQUEST_FAILED:
-                return "AUDIOFOCUS_REQUEST_FAILED";
-            case AudioManager.AUDIOFOCUS_REQUEST_GRANTED:
-                return "AUDIOFOCUS_REQUEST_GRANTED";
-            default:
-                return "Unknown";
-        }
-    }
+    // constants copied from the MedaiPlayer (only those used here)
+    private static final int MEDIA_PLAYBACK_COMPLETE = 2;
+    private static final int MEDIA_STARTED = 6;
+    private static final int MEDIA_PAUSED = 7;
+    private static final int MEDIA_STOPPED = 8;
+    private static final int MEDIA_ERROR = 100;
 }
 
 

@@ -6,4 +6,5 @@ public class GpsState {
     public boolean gpsSwitch = false;
     public boolean gpsOnTop = false;
     public int gpsGain = 0;
+    public boolean gpsIsAloud = false;
 }
