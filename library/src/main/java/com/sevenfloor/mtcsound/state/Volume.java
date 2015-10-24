@@ -25,3 +25,4 @@ public class Volume {
         return min + (max - min) * value / 100;
     }
 }
+

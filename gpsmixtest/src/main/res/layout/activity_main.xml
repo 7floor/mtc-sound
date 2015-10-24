@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dip"
+    tools:context=".MainActivity">
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/av_gps_package_enable"
+        android:text="av_gps_package enable"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/av_gps_ontop_enable"
+        android:text="av_gps_ontop enable"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="40dip" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/av_gps_monitor"
+        android:text="av_gps_monitor"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/av_gps_switch"
+        android:text="av_gps_switch"/>
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/av_gps_ontop"
+        android:text="av_gps_ontop"/>
+
+    <Space
+        android:layout_width="wrap_content"
+        android:layout_height="40dip" />
+
+    <Button
+        android:id="@+id/bnRefresh"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Refresh" />
+
+
+</LinearLayout>

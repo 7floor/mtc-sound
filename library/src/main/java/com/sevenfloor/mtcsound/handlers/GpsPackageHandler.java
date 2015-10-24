@@ -9,11 +9,17 @@ public class GpsPackageHandler extends ParameterHandler {
 
     @Override
     public String set(String value) {
-        return device.state.settings.gpsAltMix ? "" : value;
+        device.state.gpsState.gpsPackage = device.state.settings.gpsAltMix
+                ? ""
+                : value;
+
+        device.applyState();
+
+        return get();
     }
 
     @Override
     public String get() {
-        return null;
+        return device.state.gpsState.gpsPackage;
     }
 }

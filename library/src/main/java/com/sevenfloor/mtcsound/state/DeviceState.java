@@ -16,6 +16,7 @@ public class DeviceState {
     public final Volume phoneVolume = new Volume(settings.volumeRange);
     public final Balance balance = new Balance();
     public final Balance fader = new Balance();
+    public final GpsState gpsState = new GpsState();
 
     public final SoundProfile phoneProfile = new SoundProfile();
     public final SoundProfile sysProfile = new SoundProfile();

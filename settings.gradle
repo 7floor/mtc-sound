@@ -1,1 +1,1 @@
-include ':library', ':mtcsound', ':stubs', ':service'
+include ':library', ':mtcsound', ':stubs', ':service', ':gpsmixtest'

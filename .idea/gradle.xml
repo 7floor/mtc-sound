@@ -10,6 +10,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/gpsmixtest" />
             <option value="$PROJECT_DIR$/library" />
             <option value="$PROJECT_DIR$/mtcsound" />
             <option value="$PROJECT_DIR$/service" />

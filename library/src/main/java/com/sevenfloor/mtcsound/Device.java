@@ -60,9 +60,14 @@ public class Device {
         handlers.put("cfg_volumerange", new VolumeRangeHandler(this));
         handlers.put("cfg_subwoofer", new SubwooferHandler(this));
         handlers.put("cfg_gps_altmix", new GpsAltMixHandler(this));
+        handlers.put("cfg_gps_ontop", new GpsOnTopEnableHandler(this));
 
-        // gps alt mix support
+        // gps mix support
         handlers.put("av_gps_package", new GpsPackageHandler(this));
+        handlers.put("av_gps_monitor", new GpsMonitorHandler(this));
+        handlers.put("av_gps_switch", new GpsSwitchHandler(this));
+        handlers.put("av_gps_gain", new GpsGainHandler(this));
+        handlers.put("av_gps_ontop", new GpsOnTopHandler(this));
 
         // reject
         ParameterHandler nullHandler = new NullHandler(this);
