@@ -138,7 +138,7 @@ public class Device {
             case MEDIA_ERROR:
                 aloud = false;
         }
-        showToast(String.format("%b -> %b", state.gpsState.gpsIsAloud, aloud));
+        //showToast(String.format("%b -> %b", state.gpsState.gpsIsAloud, aloud));
         if (state.gpsState.gpsIsAloud == aloud)
             return;
         state.gpsState.gpsIsAloud = aloud;
@@ -158,7 +158,7 @@ public class Device {
             case AudioTrack.PLAYSTATE_STOPPED:
                 aloud = false;
         }
-        showToast(String.format("%b -> %b", state.gpsState.gpsIsAloud, aloud));
+        //showToast(String.format("%b -> %b", state.gpsState.gpsIsAloud, aloud));
         if (state.gpsState.gpsIsAloud == aloud)
             return;
         state.gpsState.gpsIsAloud = aloud;
@@ -166,7 +166,7 @@ public class Device {
     }
 
     private boolean shouldCheckPackageSound(String callerPackage) {
-        showToast(String.format("%s / %s / %b", state.gpsState.gpsPackage, callerPackage, state.gpsState.gpsMonitor));
+        //showToast(String.format("%s / %s / %b", state.gpsState.gpsPackage, callerPackage, state.gpsState.gpsMonitor));
         return state.gpsState.gpsMonitor && state.gpsState.gpsPackage.equals(callerPackage);
     }
 
@@ -185,13 +185,12 @@ public class Device {
     }
 
     private void checkStateLoaded() {
-        if (!stateLoaded)
-        {
-            persister.readState(context, state);
-            if (i2cMode)
-                hardware.applyState(state, true);
-            stateLoaded = true;
-        }
+        if (stateLoaded)
+            return;
+        persister.readState(context, state);
+        if (i2cMode)
+            hardware.applyState(state, true);
+        stateLoaded = true;
     }
 
     private boolean checkHardware() {
