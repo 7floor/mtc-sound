@@ -2,6 +2,7 @@ package com.sevenfloor.mtcsound;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioTrack;
 
 import com.sevenfloor.mtcsound.handlers.*;
 import com.sevenfloor.mtcsound.state.DeviceState;
@@ -10,6 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Device {
+
+    public static final int MEDIA_PLAYBACK_COMPLETE = 2;
+    public static final int MEDIA_STARTED = 6;
+    public static final int MEDIA_PAUSED = 7;
+    public static final int MEDIA_STOPPED = 8;
+    public static final int MEDIA_ERROR = 100;
+
     private Context context;
     private final Object lock = new Object();
     private final Map<String, ParameterHandler> handlers = new HashMap<>();
@@ -114,9 +122,7 @@ public class Device {
     }
 
     public void onMediaPlayerEvent(String callerPackage, int event) {
-        if (!state.gpsState.gpsMonitor)
-            return;
-        if (!state.gpsState.gpsPackage.equals(callerPackage))
+        if (!shouldCheckPackageSound(callerPackage))
             return;
         boolean aloud = state.gpsState.gpsIsAloud;
         switch (event)
@@ -134,6 +140,29 @@ public class Device {
             return;
         state.gpsState.gpsIsAloud = aloud;
         applyState();
+    }
+
+    public void onAudioTrackEvent(String callerPackage, int event) {
+        if (!shouldCheckPackageSound(callerPackage))
+            return;
+        boolean aloud = state.gpsState.gpsIsAloud;
+        switch (event)
+        {
+            case AudioTrack.PLAYSTATE_PLAYING:
+                aloud = true;
+                break;
+            case AudioTrack.PLAYSTATE_PAUSED:
+            case AudioTrack.PLAYSTATE_STOPPED:
+                aloud = false;
+        }
+        if (aloud != state.gpsState.gpsIsAloud)
+            return;
+        state.gpsState.gpsIsAloud = aloud;
+        applyState();
+    }
+
+    private boolean shouldCheckPackageSound(String callerPackage) {
+        return state.gpsState.gpsMonitor && state.gpsState.gpsPackage.equals(callerPackage);
     }
 
     public void applyState() {
@@ -164,10 +193,4 @@ public class Device {
         state.HardwareStatus = hardware.CheckHardware();
         return state.HardwareStatus.startsWith("i2c");
     }
-
-    private static final int MEDIA_PLAYBACK_COMPLETE = 2;
-    private static final int MEDIA_STARTED = 6;
-    private static final int MEDIA_PAUSED = 7;
-    private static final int MEDIA_STOPPED = 8;
-    private static final int MEDIA_ERROR = 100;
 }

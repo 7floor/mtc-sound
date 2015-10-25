@@ -10,6 +10,7 @@ import com.android.server.am.ActivityManagerService;
 import com.sevenfloor.mtcsound.service.IMtcSoundService;
 
 import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.media.MediaPlayer;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -71,6 +72,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         patchAudioManager(loadPackageParam);
         patchMediaPlayer(loadPackageParam);
+        patchAudioTrack(loadPackageParam);
         patchMTCManager(loadPackageParam);
         patchMTCAmpSetup(loadPackageParam);
     }
@@ -158,6 +160,47 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                             if (event != MEDIA_PLAYBACK_COMPLETE && event != MEDIA_ERROR)
                                 return;
                             getService().onMediaPlayerEvent(loadPackageParam.packageName, event);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+    }
+
+    private void patchAudioTrack(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+        findAndHookMethod(AudioTrack.class, "start",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            getService().onMediaPlayerEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_PLAYING);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+
+        findAndHookMethod(AudioTrack.class, "stop",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            getService().onMediaPlayerEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_STOPPED);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+
+        findAndHookMethod(AudioTrack.class, "pause",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            getService().onMediaPlayerEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_PAUSED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
