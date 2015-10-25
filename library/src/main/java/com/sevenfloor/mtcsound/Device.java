@@ -3,6 +3,8 @@ package com.sevenfloor.mtcsound;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioTrack;
+import android.os.Handler;
+import android.widget.Toast;
 
 import com.sevenfloor.mtcsound.handlers.*;
 import com.sevenfloor.mtcsound.state.DeviceState;
@@ -19,14 +21,14 @@ public class Device {
     public static final int MEDIA_ERROR = 100;
 
     private Context context;
+    private Handler handler = new Handler();
     private final Object lock = new Object();
+    public final DeviceState state = new DeviceState();
     private final Map<String, ParameterHandler> handlers = new HashMap<>();
     private final HwInterface hardware = new HwInterface();
     private final Persister persister = new Persister();
     private boolean stateLoaded = false;
     private boolean i2cMode;
-
-    public final DeviceState state = new DeviceState();
 
     public Device(Context context) {
         this.context = context;
@@ -136,7 +138,8 @@ public class Device {
             case MEDIA_ERROR:
                 aloud = false;
         }
-        if (aloud != state.gpsState.gpsIsAloud)
+        showToast(String.format("%b -> %b", state.gpsState.gpsIsAloud, aloud));
+        if (state.gpsState.gpsIsAloud == aloud)
             return;
         state.gpsState.gpsIsAloud = aloud;
         applyState();
@@ -155,13 +158,15 @@ public class Device {
             case AudioTrack.PLAYSTATE_STOPPED:
                 aloud = false;
         }
-        if (aloud != state.gpsState.gpsIsAloud)
+        showToast(String.format("%b -> %b", state.gpsState.gpsIsAloud, aloud));
+        if (state.gpsState.gpsIsAloud == aloud)
             return;
         state.gpsState.gpsIsAloud = aloud;
         applyState();
     }
 
     private boolean shouldCheckPackageSound(String callerPackage) {
+        showToast(String.format("%s / %s / %b", state.gpsState.gpsPackage, callerPackage, state.gpsState.gpsMonitor));
         return state.gpsState.gpsMonitor && state.gpsState.gpsPackage.equals(callerPackage);
     }
 
@@ -192,5 +197,15 @@ public class Device {
     private boolean checkHardware() {
         state.HardwareStatus = hardware.CheckHardware();
         return state.HardwareStatus.startsWith("i2c");
+    }
+
+    private void showToast(String text) {
+        final String t = text;
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(context, t, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

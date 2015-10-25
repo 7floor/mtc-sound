@@ -253,9 +253,9 @@ public class HwInterface {
 
         if (state.gpsState.gpsMonitor) {
             if (state.gpsState.gpsIsAloud)
-                cut = state.gpsState.gpsSwitch ? -100 : -10;
+                cut = state.gpsState.gpsSwitch ? 100 : 10;
         } else {
-            cut = state.gpsState.gpsOnTop ? -100 : 0;
+            cut = state.gpsState.gpsOnTop ? 100 : 0;
         }
 
         int db = state.getCurrentVolume().getValueInDb() - cut;

@@ -55,13 +55,13 @@ public class MtcSoundService extends IMtcSoundService.Stub {
     @Override
     public void onMediaPlayerEvent(String callerPackage, int event) throws RemoteException {
         device.onMediaPlayerEvent(callerPackage, event);
-        showToast(callerPackage + ": MediaPlayer " + mediaCommandName(event));
+        //showToast(callerPackage + ": MediaPlayer " + mediaCommandName(event));
     }
 
     @Override
     public void onAudioTrackEvent(String callerPackage, int event) throws RemoteException {
         device.onAudioTrackEvent(callerPackage, event);
-        showToast(callerPackage + ": AudioTrack " + audioTrackStateName(event));
+        //showToast(callerPackage + ": AudioTrack " + audioTrackStateName(event));
     }
 
     @Override
