@@ -13,6 +13,8 @@ public class VolumeHandler extends ParameterHandler {
         Integer v = Utils.stringToInt(value);
         if (v == null) return null;
         device.state.volume.setValue(v);
+        if (device.state.volume.getValue() != 0)
+            device.state.mute = false;
         device.applyState();
         return null;
     }

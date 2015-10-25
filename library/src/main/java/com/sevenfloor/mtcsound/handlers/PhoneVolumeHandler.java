@@ -13,6 +13,8 @@ public class PhoneVolumeHandler extends ParameterHandler {
         Integer v = Utils.stringToInt(value);
         if (v == null) return null;
         device.state.phoneVolume.setValue(v);
+        if (device.state.phoneVolume.getValue() != 0)
+            device.state.mute = false;
         device.applyState();
         return null;
     }
