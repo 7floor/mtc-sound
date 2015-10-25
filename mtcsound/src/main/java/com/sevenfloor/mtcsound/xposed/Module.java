@@ -169,12 +169,12 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     private void patchAudioTrack(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
-        findAndHookMethod(AudioTrack.class, "start",
+        findAndHookMethod(AudioTrack.class, "play",
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            getService().onMediaPlayerEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_PLAYING);
+                            getService().onAudioTrackEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_PLAYING);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -187,7 +187,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            getService().onMediaPlayerEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_STOPPED);
+                            getService().onAudioTrackEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_STOPPED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -200,7 +200,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            getService().onMediaPlayerEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_PAUSED);
+                            getService().onAudioTrackEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_PAUSED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
