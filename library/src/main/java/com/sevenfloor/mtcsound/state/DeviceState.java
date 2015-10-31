@@ -17,6 +17,7 @@ public class DeviceState {
     public final Balance balance = new Balance();
     public final Balance fader = new Balance();
     public final GpsState gpsState = new GpsState();
+    public final BackViewState backViewState = new BackViewState();
 
     public final SoundProfile phoneProfile = new SoundProfile();
     public final SoundProfile sysProfile = new SoundProfile();

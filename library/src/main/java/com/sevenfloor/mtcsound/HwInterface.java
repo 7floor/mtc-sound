@@ -96,7 +96,6 @@ public class HwInterface {
         applyLoudness(profile.loudnessOn, profile);
 
         applyInput(state.inputMode);
-        applyGps(state);
         applyMute(state);
 
         writeRegistersToI2C(forced);
@@ -123,9 +122,10 @@ public class HwInterface {
         }
         int vol = state.volume.getValueInDb();
         int sysGain = state.sysProfile.getInputGain();
-        int result = vol + sysGain;
-        result = Utils.adjustInt(result, -79, 7);
-        MixingGain.value = 128 - result;
+        int cut = state.backViewState.getActualCut();
+        int result = vol + sysGain - cut;
+        if (result > 7) result = 7;
+        MixingGain.value = result < -79 ? 0xFF : 128 - result;
     }
 
     private void applyInput(InputMode mode) {
@@ -168,12 +168,18 @@ public class HwInterface {
 
     private void applyVolume(DeviceState state) {
         int db = state.getCurrentVolume().getValueInDb();
-        VolumeGain.value = 128 - db;
+        int cut = state.backViewState.getActualCut();
+
+        if (state.inputMode.phoneState != PhoneState.answer && state.inputMode.input != Input.sys)
+            cut = cut + state.gpsState.getActualCut();
+
+        int result = db - cut;
+        if (result > 15) result = 15;
+        VolumeGain.value = result < -79 ? 0xFF : 128 - result;
     }
 
     private void applyBalanceAndFader(DeviceState state){
         int dbfl = 0, dbfr = 0, dbrl = 0, dbrr = 0, value;
-
 
         value = state.balance.getValue();
         if (value != 0) {
@@ -242,24 +248,6 @@ public class HwInterface {
             FaderSubwoofer.value = 0xFF;
             MixingGain.value = 0xFF;
         }
-    }
-
-    private void applyGps(DeviceState state) {
-        // don't change anything for phone and system inputs, they're controlled by default
-        if (state.inputMode.phoneState == PhoneState.answer || state.inputMode.input == Input.sys)
-            return;
-
-        int cut = 0;
-
-        if (state.gpsState.gpsMonitor) {
-            if (state.gpsState.gpsIsAloud)
-                cut = state.gpsState.gpsSwitch ? 100 : 10;
-        } else {
-            cut = state.gpsState.gpsOnTop ? 100 : 0;
-        }
-
-        int db = state.getCurrentVolume().getValueInDb() - cut;
-        VolumeGain.value = (db < -79) ? 0xFF : 128 - db;
     }
 
     private void writeRegistersToI2C(boolean forced) {

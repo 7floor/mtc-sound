@@ -79,6 +79,10 @@ public class Device {
         handlers.put("av_gps_gain", new GpsGainHandler(this));
         handlers.put("av_gps_ontop", new GpsOnTopHandler(this));
 
+        // back view mix/mute support
+        handlers.put("ctl_backview_active", new BackViewHandler(this));
+        handlers.put("ctl_backview_vol", new BackViewVolumeHandler(this));
+
         // reject
         ParameterHandler nullHandler = new NullHandler(this);
         handlers.put("av_eq", nullHandler);
