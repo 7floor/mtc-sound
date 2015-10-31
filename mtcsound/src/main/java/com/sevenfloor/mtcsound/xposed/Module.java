@@ -2,7 +2,6 @@ package com.sevenfloor.mtcsound.xposed;
 
 import android.app.ActivityManager;
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -13,9 +12,9 @@ import com.sevenfloor.mtcsound.service.IMtcSoundService;
 import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.media.MediaPlayer;
+import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.ServiceManager;
-import android.provider.Settings;
 
 import com.sevenfloor.mtcsound.service.MtcSoundService;
 
@@ -77,6 +76,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         patchAudioTrack(loadPackageParam);
         patchMTCManager(loadPackageParam);
         patchMTCAmpSetup(loadPackageParam);
+        patchBackView(loadPackageParam);
     }
 
     // patch AudioManager to replace getParameters/setParameters
@@ -213,23 +213,10 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     // patch the MTCManager to launch the new equalizer with hardware EQ button
     // instead of switching eq presets that are not supported anymore
-    // also, we'll intercept setting of microntek.backview.state
     private void patchMTCManager(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
 
         if (!"android.microntek.service".equals(loadPackageParam.packageName))
             return;
-
-        // intercept the following:
-        // Settings.System.putInt(getContentResolver(), "microntek.backview.state", n); // n = 0|1
-        findAndHookMethod(Settings.System.class, "putInt",
-                ContentResolver.class, String.class, int.class,
-                new XC_MethodHook() {
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        if ("microntek.backview.state".equals(param.args[1]))
-                            getService().setParameters("ctl_backview_active=" + String.valueOf((int) param.args[2] != 0));
-                    }
-                }
-        );
 
         try {
             findAndHookMethod("android.microntek.service.MicrontekServer", loadPackageParam.classLoader, "EQSwitch",
@@ -268,7 +255,28 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         } catch (XposedHelpers.ClassNotFoundError e) {
             XposedBridge.log("Wrong Device: class com.android.settings.MtcAmpSetup not found.");
         }
+    }
 
+    private void patchBackView(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+        if (!"com.microntek.backview".equals(loadPackageParam.packageName))
+            return;
+
+        findAndHookMethod("com.microntek.backview.BackViewActivity", loadPackageParam.classLoader, "onCreate",
+                Bundle.class,
+                new XC_MethodHook() {
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            getService().setParameters("ctl_backview_active=true");
+                    }
+                }
+        );
+
+        findAndHookMethod("com.microntek.backview.BackViewActivity", loadPackageParam.classLoader, "onDestroy",
+                new XC_MethodHook() {
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            getService().setParameters("ctl_backview_active=false");
+                    }
+                }
+        );
     }
 
     private XC_MethodHook mtcAmpSetupParameterReplacer() {

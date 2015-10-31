@@ -35,7 +35,6 @@ public class Device {
 
         handlers.put("av_control_mode", new ControlModeHandler(this));
 
-
         i2cMode = checkHardware();
         //if (!i2cMode) return;
         // listen to power, to reapply state
@@ -202,7 +201,7 @@ public class Device {
         return state.HardwareStatus.startsWith("i2c");
     }
 
-    private void showToast(String text) {
+    public void showToast(String text) {
         final String t = text;
         handler.post(new Runnable() {
             @Override
