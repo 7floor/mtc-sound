@@ -264,7 +264,8 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         findAndHookMethod("com.microntek.backview.BackViewActivity", loadPackageParam.classLoader, "onCreate",
                 Bundle.class,
                 new XC_MethodHook() {
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             getService().setParameters("ctl_backview_active=true");
                     }
                 }
@@ -272,7 +273,8 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
         findAndHookMethod("com.microntek.backview.BackViewActivity", loadPackageParam.classLoader, "onDestroy",
                 new XC_MethodHook() {
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                    @Override
+                    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                             getService().setParameters("ctl_backview_active=false");
                     }
                 }

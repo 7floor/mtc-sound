@@ -13,7 +13,8 @@ public class BackViewVolumeHandler extends ParameterHandler {
         Integer i = Utils.stringToInt(value);
         if (i == null) i = 0;
 
-        device.state.backViewState.cut = i;
+        // 0 to 10 is dB (x2), 11 = total mute
+        device.state.backViewState.cut = i > 10 ? 100 : i * 2;
         device.applyState();
 
         return get();
