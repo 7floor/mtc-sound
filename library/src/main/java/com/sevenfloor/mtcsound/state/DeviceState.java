@@ -43,15 +43,18 @@ public class DeviceState {
     }
 
     public SoundProfile getCurrentProfile() {
-        if (inputMode.phoneState == PhoneState.answer)
-            return phoneProfile;
-
-        return allProfiles.get(inputMode.input);
+        return isPhone()
+                ? phoneProfile
+                : allProfiles.get(inputMode.input);
     }
 
     public Volume getCurrentVolume() {
-        return inputMode.phoneState == PhoneState.answer
+        return isPhone()
                 ? phoneVolume
                 : volume;
+    }
+
+    public boolean isPhone() {
+        return inputMode.phoneState != PhoneState.hangup;
     }
 }

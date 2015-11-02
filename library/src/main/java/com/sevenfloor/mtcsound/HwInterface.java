@@ -95,7 +95,7 @@ public class HwInterface {
         applyEqualizerBand(profile.equalizerOn, profile.trebleBand, EqTrebleSetup, EqTrebleGain);
         applyLoudness(profile.loudnessOn, profile);
 
-        applyInput(state.inputMode);
+        applyInput(state);
         applyMute(state);
 
         writeRegistersToI2C(forced);
@@ -112,11 +112,13 @@ public class HwInterface {
     }
 
     private void applyMixingGain(DeviceState state) {
-        if (state.inputMode.phoneState == PhoneState.answer) {
+        // don't mix with the phone
+        if (state.isPhone()) {
             MixingGain.value = 0xFF;
             return;
         }
-        if (state.inputMode.input == Input.sys) {
+        // don't mix with itself or gsm_bt (it's the same hw input)
+        if (state.inputMode.input == Input.sys || state.inputMode.input == Input.gsm_bt) {
             MixingGain.value = 0xFF;
             return;
         }
@@ -128,10 +130,13 @@ public class HwInterface {
         MixingGain.value = result < -79 ? 0xFF : 128 - result;
     }
 
-    private void applyInput(InputMode mode) {
-        if (mode.phoneState == PhoneState.answer)
-        {
-            InputSelector.value = 0x80;
+    private void applyInput(DeviceState state) {
+        if (state.isPhone()) {
+            if (state.inputMode.phoneState == PhoneState.in) // incoming ring using system input
+                InputSelector.value = 0x81;
+            else // call in progress or outgoing connection tone using bluetooth input
+                InputSelector.value = 0x80;
+            // only frontal speakers should be active
             FaderRearLeft.value = 0xFF;
             FaderRearRight.value = 0xFF;
             FaderSubwoofer.value = 0xFF;
@@ -139,7 +144,7 @@ public class HwInterface {
             return;
         }
 
-        switch (mode.input)
+        switch (state.inputMode.input)
         {
             case sys:
             case gsm_bt:
@@ -168,10 +173,16 @@ public class HwInterface {
 
     private void applyVolume(DeviceState state) {
         int db = state.getCurrentVolume().getValueInDb();
-        int cut = state.backViewState.getActualCut();
 
-        if (state.inputMode.phoneState != PhoneState.answer && state.inputMode.input != Input.sys)
-            cut = cut + state.gpsState.getActualCut();
+        int cut = 0;
+
+        // cut only if no phone operations in progress
+        if (!state.isPhone()) {
+            cut = state.backViewState.getActualCut();
+            // cut for gps only when the inputs are not sys nor gsm_bt since they're already cut by stock native code
+            if (state.inputMode.input != Input.sys && state.inputMode.input != Input.gsm_bt)
+                cut = cut + state.gpsState.getActualCut();
+        }
 
         int result = db - cut;
         if (result > 15) result = 15;

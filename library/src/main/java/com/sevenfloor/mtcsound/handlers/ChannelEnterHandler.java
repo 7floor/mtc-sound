@@ -24,7 +24,7 @@ public class ChannelEnterHandler extends ParameterHandler {
             return value;
 
         boolean wasMuted = device.state.mute;
-        if (!wasMuted && device.state.inputMode.phoneState != PhoneState.answer) {
+        if (!wasMuted && !device.state.isPhone()) {
             device.state.mute = true;
             device.applyState();
             Utils.sleep(25);
