@@ -8,6 +8,11 @@ public class SubwooferHandler extends ParameterHandler {
     }
 
     @Override
+    public String getName() {
+        return "cfg_subwoofer"; // non-stock
+    }
+
+    @Override
     public String set(String value) {
         device.state.settings.subwoofer.setString(value);
         device.applyState();
@@ -15,7 +20,7 @@ public class SubwooferHandler extends ParameterHandler {
     }
 
     @Override
-    public String get() {
+    public String get(String value) {
         return device.state.settings.subwoofer.getString();
     }
 }

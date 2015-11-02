@@ -9,18 +9,21 @@ public class GpsSwitchHandler extends ParameterHandler {
     }
 
     @Override
-    public String set(String value) {
-        Boolean b = Utils.stringToBoolean(value, "on", "off");
-        if (b == null) b = false;
-
-        device.state.gpsState.gpsSwitch = b;
-        device.applyState();
-
-        return get();
+    public String getName() {
+        return "av_gps_switch"; // stock
     }
 
     @Override
-    public String get() {
+    public String set(String value) {
+        Boolean b = Utils.stringToBoolean(value, "on", "off");
+        if (b == null) return value;
+        device.state.gpsState.gpsSwitch = b;
+        device.applyState();
+        return value;
+    }
+
+    @Override
+    public String get(String value) {
         return Utils.booleanToString(device.state.gpsState.gpsSwitch, "on", "off");
     }
 }

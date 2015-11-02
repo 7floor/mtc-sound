@@ -4,7 +4,6 @@ public class Settings {
     public final SubwooferOptions subwoofer = new SubwooferOptions();
     public final VolumeRange volumeRange = new VolumeRange();
     public boolean gpsAltMix = false;
-    public boolean gpsOnTopEnable = true;
 
     public void setString(String value){
         String[] parts = value.split("\\|");

@@ -33,77 +33,64 @@ public class Device {
     public Device(Context context) {
         this.context = context;
 
-        handlers.put("av_control_mode", new ControlModeHandler(this));
+        addHandler(new ControlModeHandler(this));
 
         i2cMode = checkHardware();
-        //if (!i2cMode) return;
-        // listen to power, to reapply state
-        // on some devices, maybe 3066 it is known to lose system input after return from sleep
-        handlers.put("rpt_power", new PowerHandler(this));
+
+        addHandler(new PowerHandler(this));
 
         // inputs
-        handlers.put("av_channel_enter", new ChannelEnterHandler(this));
-        handlers.put("av_channel_exit", new ChannelExitHandler(this));
-        handlers.put("av_channel", new ChannelQueryHandler(this));
-        handlers.put("av_phone", new PhoneHandler(this));
+        addHandler(new ChannelEnterHandler(this));
+        addHandler(new ChannelExitHandler(this));
+        addHandler(new ChannelQueryHandler(this));
+        addHandler(new PhoneHandler(this));
 
-        // globals
-        handlers.put("av_mute", new MuteHandler(this));
-        handlers.put("av_volume", new VolumeHandler(this));
-        handlers.put("av_phone_volume", new PhoneVolumeHandler(this));
-        handlers.put("av_balance", new BalanceHandler(this));
+        // globals: mute, volume, balance
+        addHandler(new MuteHandler(this));
+        addHandler(new VolumeHandler(this));
+        addHandler(new PhoneVolumeHandler(this));
+        addHandler(new BalanceHandler(this));
 
-        // profile-specific
-        handlers.put("av_gain", new InputGainHandler(this));
-
-        handlers.put("av_eq_on", new EqualizerOnHandler(this));
-        handlers.put("av_eq_bass", new BassHandler(this));
-        handlers.put("av_eq_middle", new MiddleHandler(this));
-        handlers.put("av_eq_treble", new TrebleHandler(this));
-
-        handlers.put("av_lud", new LoudnessOnHandler(this)); // because this is an existing name supported by MTCManager (for LOUD hardware button)
-        handlers.put("av_loudness", new LoudnessHandler(this));
-
-        // configuration
-        handlers.put("cfg_maxvolume", new GetMaxVolumeHandler(this));
-        handlers.put("cfg_volumerange", new VolumeRangeHandler(this));
-        handlers.put("cfg_subwoofer", new SubwooferHandler(this));
-        handlers.put("cfg_gps_altmix", new GpsAltMixHandler(this));
-        handlers.put("cfg_gps_ontop", new GpsOnTopEnableHandler(this));
+        // profile-specific: preamp, eq, loudness
+        addHandler(new InputGainHandler(this));
+        addHandler(new EqualizerOnHandler(this));
+        addHandler(new BassHandler(this));
+        addHandler(new MiddleHandler(this));
+        addHandler(new TrebleHandler(this));
+        addHandler(new LoudnessOnHandler(this));
+        addHandler(new LoudnessHandler(this));
 
         // gps mix support
-        handlers.put("av_gps_package", new GpsPackageHandler(this));
-        handlers.put("av_gps_monitor", new GpsMonitorHandler(this));
-        handlers.put("av_gps_switch", new GpsSwitchHandler(this));
-        handlers.put("av_gps_gain", new GpsGainHandler(this));
-        handlers.put("av_gps_ontop", new GpsOnTopHandler(this));
+        addHandler(new GpsPackageHandler(this));
+        addHandler(new GpsMonitorHandler(this));
+        addHandler(new GpsSwitchHandler(this));
+        addHandler(new GpsGainHandler(this));
+        addHandler(new GpsOnTopHandler(this));
 
         // back view mix/mute support
-        handlers.put("ctl_backview_active", new BackViewHandler(this));
-        handlers.put("ctl_backview_vol", new BackViewVolumeHandler(this));
+        addHandler(new BackViewHandler(this));
+        addHandler(new BackViewVolumeHandler(this));
 
-        // reject
-        ParameterHandler nullHandler = new NullHandler(this);
-        handlers.put("av_eq", nullHandler);
+        // configuration
+        addHandler(new VolumeRangeHandler(this));
+        addHandler(new SubwooferHandler(this));
+        addHandler(new GpsAltMixHandler(this));
     }
 
     public String getParameters(String keyValue, String defaultValue) {
         String[] parts = Utils.splitKeyValue(keyValue);
         if (parts == null) return defaultValue;
         String key = parts[0];
-        String value = null;
 
         ParameterHandler handler = handlers.get(key);
         if (handler != null) {
             synchronized (lock) {
                 checkStateLoaded();
-                value = handler.get();
+                defaultValue = handler.get(defaultValue);
             }
         }
 
-        if (value == null) return defaultValue;
-
-        return value;
+        return defaultValue;
     }
 
     public String setParameters(String keyValue) {
@@ -168,11 +155,6 @@ public class Device {
         applyState();
     }
 
-    private boolean shouldCheckPackageSound(String callerPackage) {
-        //showToast(String.format("%s / %s / %b", state.gpsState.gpsPackage, callerPackage, state.gpsState.gpsMonitor));
-        return state.gpsState.gpsMonitor && state.gpsState.gpsPackage.equals(callerPackage);
-    }
-
     public void applyState() {
         applyState(false);
     }
@@ -199,6 +181,18 @@ public class Device {
     private boolean checkHardware() {
         state.HardwareStatus = hardware.CheckHardware();
         return state.HardwareStatus.startsWith("i2c");
+    }
+
+    private void addHandler(ParameterHandler handler){
+        addHandler(handler, handler.getName());
+    }
+
+    private void addHandler(ParameterHandler handler, String name){
+        handlers.put(name, handler);
+    }
+
+    private boolean shouldCheckPackageSound(String callerPackage) {
+        return state.gpsState.gpsMonitor && state.gpsState.gpsPackage.equals(callerPackage);
     }
 
     public void showToast(String text) {

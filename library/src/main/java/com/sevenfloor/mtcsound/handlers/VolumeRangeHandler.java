@@ -8,6 +8,11 @@ public class VolumeRangeHandler extends ParameterHandler {
     }
 
     @Override
+    public String getName() {
+        return "cfg_volumerange"; // non-stock
+    }
+
+    @Override
     public String set(String value) {
         device.state.settings.volumeRange.setString(value);
         device.applyState();
@@ -15,7 +20,7 @@ public class VolumeRangeHandler extends ParameterHandler {
     }
 
     @Override
-    public String get() {
+    public String get(String value) {
         return device.state.settings.volumeRange.getString();
     }
 }

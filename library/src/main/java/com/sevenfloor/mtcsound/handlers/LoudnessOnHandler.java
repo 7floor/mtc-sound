@@ -9,16 +9,21 @@ public class LoudnessOnHandler extends ParameterHandler {
     }
 
     @Override
-    public String set(String value) {
-        Boolean x = Utils.stringToBoolean(value, "on", "off");
-        if (x == null) return null;
-        device.state.getCurrentProfile().loudnessOn = x;
-        device.applyState();
-        return value; // let the MCU know, useful for no HW patch
+    public String getName() {
+        return "av_lud"; // stock
     }
 
     @Override
-    public String get() {
+    public String set(String value) {
+        Boolean x = Utils.stringToBoolean(value, "on", "off");
+        if (x == null) return value;
+        device.state.getCurrentProfile().loudnessOn = x;
+        device.applyState();
+        return value;
+    }
+
+    @Override
+    public String get(String value) {
         return Utils.booleanToString(device.state.getCurrentProfile().loudnessOn, "on", "off");
     }
 }

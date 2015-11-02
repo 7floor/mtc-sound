@@ -8,6 +8,11 @@ public class LoudnessHandler extends ParameterHandler {
     }
 
     @Override
+    public String getName() {
+        return "av_loudness"; // non-stock
+    }
+
+    @Override
     public String set(String value) {
         device.state.getCurrentProfile().loudness.setString(value);
         device.applyState();
@@ -15,7 +20,7 @@ public class LoudnessHandler extends ParameterHandler {
     }
 
     @Override
-    public String get() {
+    public String get(String value) {
         return device.state.getCurrentProfile().loudness.getString();
     }
 }

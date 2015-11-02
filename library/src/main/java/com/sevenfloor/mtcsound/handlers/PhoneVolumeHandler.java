@@ -9,18 +9,22 @@ public class PhoneVolumeHandler extends ParameterHandler {
     }
 
     @Override
-    public String set(String value) {
-        Integer v = Utils.stringToInt(value);
-        if (v == null) return null;
-        device.state.phoneVolume.setValue(v);
-        if (device.state.phoneVolume.getValue() != 0)
-            device.state.mute = false;
-        device.applyState();
-        return null;
+    public String getName() {
+        return "av_phone_volume"; // stock
     }
 
     @Override
-    public String get() {
+    public String set(String value) {
+        Integer v = Utils.stringToInt(value);
+        if (v == null) return value;
+        device.state.phoneVolume.setValue(v);
+        device.state.mute = device.state.phoneVolume.getValue() == 0;
+        device.applyState();
+        return value;
+    }
+
+    @Override
+    public String get(String value) {
         return String.valueOf(device.state.phoneVolume.getValue());
     }
 }

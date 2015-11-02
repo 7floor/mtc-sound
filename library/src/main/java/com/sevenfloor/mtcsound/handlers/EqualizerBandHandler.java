@@ -12,11 +12,11 @@ public abstract class EqualizerBandHandler extends ParameterHandler {
     public String set(String value) {
         getBand().setString(value);
         device.applyState();
-        return null;
+        return null; // prevent from sending to MCU
     }
 
     @Override
-    public String get() {
+    public String get(String value) {
         return getBand().getString();
     }
 

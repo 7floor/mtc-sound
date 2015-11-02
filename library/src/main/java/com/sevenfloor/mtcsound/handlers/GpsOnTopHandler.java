@@ -9,21 +9,23 @@ public class GpsOnTopHandler extends ParameterHandler {
     }
 
     @Override
-    public String set(String value) {
-        Boolean b = device.state.settings.gpsOnTopEnable
-                ? Utils.stringToBoolean(value, "true", "false")
-                : (Boolean)false;
-
-        if (b == null) b = false;
-
-        device.state.gpsState.gpsOnTop = b;
-        device.applyState();
-
-        return get();
+    public String getName() {
+        return "av_gps_ontop"; // stock
     }
 
     @Override
-    public String get() {
+    public String set(String value) {
+        if (device.state.settings.gpsAltMix)
+            value = "false";
+        Boolean b = Utils.stringToBoolean(value, "true", "false");
+        if (b == null) return value;
+        device.state.gpsState.gpsOnTop = b;
+        device.applyState();
+        return value;
+    }
+
+    @Override
+    public String get(String value) {
         return Utils.booleanToString(device.state.gpsState.gpsOnTop, "true", "false");
     }
 }

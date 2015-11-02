@@ -9,6 +9,11 @@ public class BassHandler extends EqualizerBandHandler {
     }
 
     @Override
+    public String getName() {
+        return "av_eq_bass"; // non-stock
+    }
+
+    @Override
     protected EqualizerBand getBand() {
         return device.state.getCurrentProfile().bassBand;
     }

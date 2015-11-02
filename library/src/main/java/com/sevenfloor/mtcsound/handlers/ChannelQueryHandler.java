@@ -8,12 +8,12 @@ public class ChannelQueryHandler extends ParameterHandler {
     }
 
     @Override
-    public String set(String value) {
-        return value;
+    public String getName() {
+        return "av_channel"; // stock
     }
 
     @Override
-    public String get() {
+    public String get(String value) {
         return device.state.inputMode.input.toString();
     }
 }

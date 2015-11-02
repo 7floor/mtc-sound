@@ -9,10 +9,15 @@ public class BalanceHandler extends ParameterHandler {
     }
 
     @Override
+    public String getName() {
+        return "av_balance"; // stock
+    }
+
+    @Override
     public String set(String value) {
         // lr, fr - both biased as 0..28, but out setting needs -14..14
         String[] values = value.split(",");
-        if (values.length != 2) return null;
+        if (values.length != 2) return value;
 
         Integer v;
 
@@ -26,11 +31,11 @@ public class BalanceHandler extends ParameterHandler {
 
         device.applyState();
 
-        return null;
+        return value;
     }
 
     @Override
-    public String get() {
+    public String get(String value) {
         return String.format("%d,%d", device.state.balance.getValue() + 14, device.state.fader.getValue() + 14);
     }
 }

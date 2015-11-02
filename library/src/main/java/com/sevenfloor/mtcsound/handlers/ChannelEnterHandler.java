@@ -11,9 +11,14 @@ public class ChannelEnterHandler extends ParameterHandler {
     }
 
     @Override
+    public String getName() {
+        return "av_channel_enter"; // stock
+    }
+
+    @Override
     public String set(String value) {
         Input input = Utils.stringToEnum(Input.class, value);
-        if (input == null) return null;
+        if (input == null) return value;
 
         if (device.state.inputMode.input == input)
             return value;
@@ -37,11 +42,6 @@ public class ChannelEnterHandler extends ParameterHandler {
         device.notifyInputChange();
 
         return value;
-    }
-
-    @Override
-    public String get() {
-        return "";
     }
 }
 

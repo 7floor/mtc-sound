@@ -10,9 +10,14 @@ public class PhoneHandler extends ParameterHandler {
     }
 
     @Override
+    public String getName() {
+        return "av_phone"; // stock
+    }
+
+    @Override
     public String set(String value) {
         PhoneState state = Utils.stringToEnum(PhoneState.class, value);
-        if (state == null) return null;
+        if (state == null) return value;
 
         if (device.state.inputMode.phoneState == state) {
             return value;
@@ -26,7 +31,7 @@ public class PhoneHandler extends ParameterHandler {
     }
 
     @Override
-    public String get() {
+    public String get(String value) {
         return device.state.inputMode.phoneState.name();
     }
 }

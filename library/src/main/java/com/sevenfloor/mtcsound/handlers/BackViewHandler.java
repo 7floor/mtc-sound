@@ -9,6 +9,11 @@ public class BackViewHandler extends ParameterHandler {
     }
 
     @Override
+    public String getName() {
+        return "ctl_backview_active"; // non-stock
+    }
+
+    @Override
     public String set(String value) {
         Boolean x = Utils.stringToBoolean(value, "true", "false");
         if (x == null) return null;
@@ -18,7 +23,7 @@ public class BackViewHandler extends ParameterHandler {
     }
 
     @Override
-    public String get() {
+    public String get(String value) {
         return Utils.booleanToString(device.state.backViewState.active, "true", "false");
     }
 }

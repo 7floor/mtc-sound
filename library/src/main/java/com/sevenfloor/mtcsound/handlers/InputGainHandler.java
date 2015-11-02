@@ -9,18 +9,21 @@ public class InputGainHandler extends ParameterHandler {
     }
 
     @Override
-    public String set(String value) {
-        Integer v = Utils.stringToInt(value);
-
-        if (v != null)
-            device.state.getCurrentProfile().setInputGain(v);
-
-        device.applyState();
-        return null;
+    public String getName() {
+        return "av_gain"; // non-stock
     }
 
     @Override
-    public String get() {
+    public String set(String value) {
+        Integer v = Utils.stringToInt(value);
+        if (v == null) return null;
+        device.state.getCurrentProfile().setInputGain(v);
+        device.applyState();
+        return null; // prevent from sending to MCU
+    }
+
+    @Override
+    public String get(String value) {
         return String.valueOf(device.state.getCurrentProfile().getInputGain());
     }
 }

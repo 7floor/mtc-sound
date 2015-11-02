@@ -11,9 +11,14 @@ public class ChannelExitHandler extends ParameterHandler {
     }
 
     @Override
+    public String getName() {
+        return "av_channel_exit"; // stock
+    }
+
+    @Override
     public String set(String value) {
         Input input = Utils.stringToEnum(Input.class, value);
-        if (input == null) return null;
+        if (input == null) return value;
 
         if (device.state.inputMode.input == Input.sys)
             return value;
@@ -37,10 +42,5 @@ public class ChannelExitHandler extends ParameterHandler {
         device.notifyInputChange();
 
         return value;
-    }
-
-    @Override
-    public String get() {
-        return "";
     }
 }
