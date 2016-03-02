@@ -49,7 +49,7 @@ public class I2cBus {
                 return errno;
             }
 
-            if (CLib.instance.ioctl(file, CLib.I2C_RETRIES, (int) 0) < 0) {
+            if (CLib.instance.ioctl(file, CLib.I2C_RETRIES, (int) 2) < 0) {
                 errno = Native.getLastError();
                 lastError = String.format("Error in ioctl(retries) %d", errno);
                 CLib.instance.close(file);

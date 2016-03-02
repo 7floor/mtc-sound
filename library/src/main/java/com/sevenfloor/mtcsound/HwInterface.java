@@ -98,7 +98,8 @@ public class HwInterface {
         applyInput(state);
         applyMute(state);
 
-        writeRegistersToI2C(forced);
+        //writeRegistersToI2C(forced);
+        writeAllRegistersToI2C();
     }
 
     private void applySettings(DeviceState state) {
@@ -262,6 +263,8 @@ public class HwInterface {
     }
 
     private void writeRegistersToI2C(boolean forced) {
+        // implements write of a single register at a time for each of changed registers
+        // i.e. 0x80 0x01 [0x01] 0x80 0x02 [0x02] 0x80 0x03 [0x03] etc.
         ArrayList<byte[]> buffer = new ArrayList<>(AllRegisters.length);
         for (Register r: AllRegisters) {
             if (forced || r.isChanged()) {
@@ -270,6 +273,19 @@ public class HwInterface {
             }
         }
         I2cBus.write(0x40, buffer.toArray(new byte[][]{}));
+    }
+
+    private void writeAllRegistersToI2C() {
+        // implements a single continuous write of all registers
+        // i.e. 0x80 0x01 [0x01] [0x02] [0x03] [0x05] [0x06] [0x20] ... [0x57] [0x75]
+        byte[] buffer = new byte[AllRegisters.length + 1];
+        buffer[0] = (byte) AllRegisters[0].index;
+        for (int i = 0; i < AllRegisters.length; i++) {
+            Register r = AllRegisters[i];
+            buffer[i + 1] = (byte) r.value;
+            r.flush();
+        }
+        I2cBus.write(0x40, new byte[][]{buffer});
     }
 
     private static boolean checkDevI2cFile(int channel) {

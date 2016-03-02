@@ -39,6 +39,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
+
         XposedBridge.hookAllMethods(ActivityManagerService.class, "main",
                 new XC_MethodHook() {
                     @Override
@@ -67,11 +68,12 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     }
                 }
         );
+
+        patchAudioManager();
     }
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        patchAudioManager(loadPackageParam);
         patchMediaPlayer(loadPackageParam);
         patchAudioTrack(loadPackageParam);
         patchMTCManager(loadPackageParam);
@@ -80,7 +82,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     // patch AudioManager to replace getParameters/setParameters
-    private void patchAudioManager(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    private void patchAudioManager() {
 
         findAndHookMethod(AudioManager.class, "getParameters", String.class, new XC_MethodReplacement() {
                     @Override
