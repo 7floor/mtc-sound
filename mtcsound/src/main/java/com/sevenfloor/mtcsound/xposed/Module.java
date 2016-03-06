@@ -37,6 +37,8 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     // use only for injection into system server
     private static MtcSoundService serviceInstance;
 
+    private static String packageName = "";
+
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
 
@@ -70,15 +72,16 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         );
 
         patchAudioManager();
+        patchMediaPlayer();
+        patchAudioTrack();
     }
 
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
-        patchMediaPlayer(loadPackageParam);
-        patchAudioTrack(loadPackageParam);
+        packageName = loadPackageParam.packageName;
         patchMTCManager(loadPackageParam);
         patchMTCAmpSetup(loadPackageParam);
-        patchBackView(loadPackageParam);
+        patchMTCBackView(loadPackageParam);
     }
 
     // patch AudioManager to replace getParameters/setParameters
@@ -113,14 +116,14 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     // patch MediaPlayer to let the Service know the start/stop/pause etc. events
-    private void patchMediaPlayer(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    private void patchMediaPlayer() {
 
         findAndHookMethod(MediaPlayer.class, "start",
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            getService().onMediaPlayerEvent(loadPackageParam.packageName, MEDIA_STARTED);
+                            getService().onMediaPlayerEvent(packageName, MEDIA_STARTED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -133,7 +136,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            getService().onMediaPlayerEvent(loadPackageParam.packageName, MEDIA_STOPPED);
+                            getService().onMediaPlayerEvent(packageName, MEDIA_STOPPED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -146,7 +149,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            getService().onMediaPlayerEvent(loadPackageParam.packageName, MEDIA_PAUSED);
+                            getService().onMediaPlayerEvent(packageName, MEDIA_PAUSED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -163,7 +166,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                             int event = (int) param.args[1];
                             if (event != MEDIA_PLAYBACK_COMPLETE && event != MEDIA_ERROR)
                                 return;
-                            getService().onMediaPlayerEvent(loadPackageParam.packageName, event);
+                            getService().onMediaPlayerEvent(packageName, event);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -172,13 +175,13 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         );
     }
 
-    private void patchAudioTrack(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    private void patchAudioTrack() {
         findAndHookMethod(AudioTrack.class, "play",
                 new XC_MethodHook() {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            getService().onAudioTrackEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_PLAYING);
+                            getService().onAudioTrackEvent(packageName, AudioTrack.PLAYSTATE_PLAYING);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -191,7 +194,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            getService().onAudioTrackEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_STOPPED);
+                            getService().onAudioTrackEvent(packageName, AudioTrack.PLAYSTATE_STOPPED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -204,7 +207,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
-                            getService().onAudioTrackEvent(loadPackageParam.packageName, AudioTrack.PLAYSTATE_PAUSED);
+                            getService().onAudioTrackEvent(packageName, AudioTrack.PLAYSTATE_PAUSED);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -259,7 +262,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         }
     }
 
-    private void patchBackView(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
+    private void patchMTCBackView(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
         if (!"com.microntek.backview".equals(loadPackageParam.packageName))
             return;
 
