@@ -33,10 +33,6 @@ import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     private static final String PACKAGE_NAME = "com.sevenfloor.mtcsound";
     private static IMtcSoundService service;
-
-    // use only for injection into system server
-    private static MtcSoundService serviceInstance;
-
     private static String packageName = "";
 
     @Override
@@ -48,7 +44,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     protected final void afterHookedMethod(final XC_MethodHook.MethodHookParam param) {
                         try {
                             Context context = (Context) param.getResult();
-                            serviceInstance = new MtcSoundService(context);
+                            MtcSoundService serviceInstance = new MtcSoundService(context);
                             ServiceManager.addService(MtcSoundService.SERVICE_NAME, serviceInstance);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
@@ -62,7 +58,6 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected final void afterHookedMethod(final MethodHookParam param) {
                         try {
-                            serviceInstance.initialize();
                             XposedBridge.log(String.format("The Sound Control Status is: %s", getService().getParameters("av_control_mode=")));
                         } catch (Throwable t) {
                             XposedBridge.log(t);
