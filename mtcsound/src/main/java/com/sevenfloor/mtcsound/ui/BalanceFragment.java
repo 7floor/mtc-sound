@@ -36,10 +36,10 @@ public class BalanceFragment
     }
 
     public void updateBalance() {
-        int[] parts = parseList(android.provider.Settings.System.getString(activity.getContentResolver(), "KeyBalance"));
+        int[] parts = parseList(audioManager.getParameters("av_balance="));
         if (parts.length == 2)
         {
-            balance.setBalance(parts[0], parts[1]);
+            balance.setBalance(parts[0], 28 - parts[1]);
         }
         else
         {
@@ -50,8 +50,6 @@ public class BalanceFragment
     @Override
     public void onBalanceChange(int balanceX, int balanceY, int byUser) {
         audioManager.setParameters(String.format("av_balance=%d,%d", balanceX, 28 - balanceY));
-        android.provider.Settings.System.putString(activity.getContentResolver(), "KeyBalance", String.format("%d,%d", balanceX, balanceY));
-        android.provider.Settings.System.putString(activity.getContentResolver(), "KeyBalanceMode", "0");
     }
 
     @Override
