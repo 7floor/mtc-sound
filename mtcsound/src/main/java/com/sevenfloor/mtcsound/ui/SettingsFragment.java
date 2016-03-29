@@ -14,7 +14,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
     private SeekBar subOutput, subCutOff, subPhase, subGain, volMin, volMax;
     private TextView subGainV, volMinV, volMaxV;
-    private CheckBox altNavi;
+    private CheckBox phoneFL, phoneFR, phoneRL, phoneRR, altNavi;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -38,6 +38,11 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
         volMinV = (TextView)view.findViewById(R.id.volMinGain);
         volMaxV = (TextView)view.findViewById(R.id.volMaxGain);
 
+        (phoneFL = (CheckBox)view.findViewById(R.id.setup_phone_fl)).setOnClickListener(this);
+        (phoneFR = (CheckBox)view.findViewById(R.id.setup_phone_fr)).setOnClickListener(this);
+        (phoneRL = (CheckBox)view.findViewById(R.id.setup_phone_rl)).setOnClickListener(this);
+        (phoneRR = (CheckBox)view.findViewById(R.id.setup_phone_rr)).setOnClickListener(this);
+
         (altNavi = (CheckBox)view.findViewById(R.id.setup_altnavi)).setOnClickListener(this);
 
         return view;
@@ -46,7 +51,18 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void update() {
         updateBars();
+        updatePhone();
         updateOther();
+    }
+
+    private void updatePhone() {
+        int[] params = parseList(audioManager.getParameters("cfg_gps_phoneout="));
+        if (params.length == 4){
+            phoneFL.setChecked(params[0] != 0);
+            phoneFR.setChecked(params[1] != 0);
+            phoneRL.setChecked(params[2] != 0);
+            phoneRR.setChecked(params[3] != 0);
+        }
     }
 
     private void updateOther() {
@@ -120,10 +136,19 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        switch (v.getId())
-        {
+        switch (v.getId()) {
             case R.id.setup_altnavi:
                 audioManager.setParameters("cfg_gps_altmix=" + (altNavi.isChecked() ? "true" : "false"));
+                break;
+            case R.id.setup_phone_fl:
+            case R.id.setup_phone_fr:
+            case R.id.setup_phone_rl:
+            case R.id.setup_phone_rr:
+                audioManager.setParameters(String.format("cfg_gps_phoneout=%d,%d,%d,%d",
+                        phoneFL.isChecked() ? 1 : 0,
+                        phoneFR.isChecked() ? 1 : 0,
+                        phoneRL.isChecked() ? 1 : 0,
+                        phoneRR.isChecked() ? 1 : 0));
                 break;
         }
     }

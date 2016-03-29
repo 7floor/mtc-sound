@@ -137,10 +137,17 @@ public class HwInterface {
                 InputSelector.value = 0x81;
             else // call in progress or outgoing connection tone using bluetooth input
                 InputSelector.value = 0x80;
-            // only frontal speakers should be active
-            FaderRearLeft.value = 0xFF;
-            FaderRearRight.value = 0xFF;
-            FaderSubwoofer.value = 0xFF;
+
+            // mute channels that are disabled in settings
+            if (!state.settings.phoneOut.fl)
+                FaderFrontLeft.value = 0xFF;
+            if (!state.settings.phoneOut.fr)
+                FaderFrontRight.value = 0xFF;
+            if (!state.settings.phoneOut.rl)
+                FaderRearLeft.value = 0xFF;
+            if (!state.settings.phoneOut.rr)
+                FaderRearRight.value = 0xFF;
+
             MixingGain.value = 0xFF;
             return;
         }

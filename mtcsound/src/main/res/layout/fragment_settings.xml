@@ -227,10 +227,53 @@
     </LinearLayout>
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center_horizontal">
+        <TextView style="@style/large_label"
+            android:layout_marginTop="@dimen/setup_header_margin"
+            android:text="@string/setup_phone_output"/>
+        <TableLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TableRow>
+                <CheckBox
+                    style="@style/medium_label"
+                    android:id="@+id/setup_phone_fl"
+                    android:padding="@dimen/radio_padding"
+                    android:button="@null"
+                    android:drawableTop="@drawable/radiobutton"
+                    android:layout_width="wrap_content"
+                    android:text="@string/setup_button_phone_fl" />
+                <CheckBox
+                    style="@style/medium_label"
+                    android:id="@+id/setup_phone_fr"
+                    android:padding="@dimen/radio_padding"
+                    android:button="@null"
+                    android:drawableTop="@drawable/radiobutton"
+                    android:layout_width="wrap_content"
+                    android:text="@string/setup_button_phone_fr" />
+            </TableRow>
+            <TableRow>
+                <CheckBox
+                    style="@style/medium_label"
+                    android:id="@+id/setup_phone_rl"
+                    android:padding="@dimen/radio_padding"
+                    android:button="@null"
+                    android:drawableTop="@drawable/radiobutton"
+                    android:layout_width="wrap_content"
+                    android:text="@string/setup_button_phone_rl" />
+                <CheckBox
+                    style="@style/medium_label"
+                    android:id="@+id/setup_phone_rr"
+                    android:padding="@dimen/radio_padding"
+                    android:button="@null"
+                    android:drawableTop="@drawable/radiobutton"
+                    android:layout_width="wrap_content"
+                    android:text="@string/setup_button_phone_rr" />
+            </TableRow>
+        </TableLayout>
         <TextView style="@style/large_label" android:layout_marginTop="@dimen/setup_header_margin" android:text="@string/setup_other"/>
         <CheckBox
             style="@style/medium_label"
@@ -238,7 +281,7 @@
             android:layout_marginTop="@dimen/checkbox_top_margin"
             android:button="@null"
             android:drawableTop="@drawable/radiobutton"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:text="@string/setup_button_altnavi" />
     </LinearLayout>
 </LinearLayout>

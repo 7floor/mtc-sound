@@ -74,6 +74,7 @@ public class Device {
         // configuration
         addHandler(new VolumeRangeHandler(this));
         addHandler(new SubwooferHandler(this));
+        addHandler(new PhoneOutHandler(this));
         addHandler(new GpsAltMixHandler(this));
     }
 
