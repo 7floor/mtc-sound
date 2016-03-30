@@ -19,7 +19,7 @@ public class Settings {
     }
 
     public String getString(){
-        return String.format("%s|%s|%b|s", subwoofer.getString(), volumeRange.getString(), gpsAltMix, phoneOut.getString());
+        return String.format("%s|%s|%b|%s", subwoofer.getString(), volumeRange.getString(), gpsAltMix, phoneOut.getString());
     }
 }
 
