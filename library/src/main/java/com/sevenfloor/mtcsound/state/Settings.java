@@ -4,6 +4,7 @@ public class Settings {
     public final SubwooferOptions subwoofer = new SubwooferOptions();
     public final VolumeRange volumeRange = new VolumeRange();
     public boolean gpsAltMix = false;
+    public boolean gsmAltInput = false;
     public PhoneOut phoneOut = new PhoneOut();
 
     public void setString(String value){
@@ -16,10 +17,12 @@ public class Settings {
         gpsAltMix = Boolean.valueOf(parts[2]);
         if (parts.length < 4) return;
         phoneOut.setString(parts[3]);
+        if (parts.length < 5) return;
+        gsmAltInput = Boolean.valueOf(parts[4]);
     }
 
     public String getString(){
-        return String.format("%s|%s|%b|%s", subwoofer.getString(), volumeRange.getString(), gpsAltMix, phoneOut.getString());
+        return String.format("%s|%s|%b|%s|%b", subwoofer.getString(), volumeRange.getString(), gpsAltMix, phoneOut.getString(), gsmAltInput);
     }
 }
 

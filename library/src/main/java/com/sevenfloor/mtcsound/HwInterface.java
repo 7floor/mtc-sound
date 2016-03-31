@@ -133,7 +133,9 @@ public class HwInterface {
 
     private void applyInput(DeviceState state) {
         if (state.isPhone()) {
-            if (state.inputMode.phoneState == PhoneState.in) // incoming ring using system input
+            // incoming ring using system input
+            // as well as some types of BT (e.g. BC6B) use system always
+            if (state.settings.gsmAltInput || state.inputMode.phoneState == PhoneState.in)
                 InputSelector.value = 0x81;
             else // call in progress or outgoing connection tone using bluetooth input
                 InputSelector.value = 0x80;

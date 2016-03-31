@@ -80,6 +80,7 @@
     <string name="setup_button_phone_fr">FR</string>
     <string name="setup_button_phone_rl">RL</string>
     <string name="setup_button_phone_rr">RR</string>
+    <string name="setup_button_altgsm">GSM via Android</string>
     <string name="setup_button_altnavi">Alt. Navigation Mix</string>
 
     <string name="input_phone">Phone</string>

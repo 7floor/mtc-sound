@@ -39,6 +39,7 @@
     <string name="setup_button_phone_fr">ПП</string>
     <string name="setup_button_phone_rl">ЗЛ</string>
     <string name="setup_button_phone_rr">ЗП</string>
+    <string name="setup_button_altgsm">GSM через Android</string>
     <string name="setup_button_altnavi">Альт. микс Навигации</string>
 
     <string name="input_phone">Телефон</string>

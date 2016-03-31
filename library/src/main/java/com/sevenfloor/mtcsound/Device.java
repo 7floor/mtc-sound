@@ -76,6 +76,7 @@ public class Device {
         addHandler(new SubwooferHandler(this));
         addHandler(new PhoneOutHandler(this));
         addHandler(new GpsAltMixHandler(this));
+        addHandler(new GsmAltInputHandler(this));
     }
 
     public String getParameters(String keyValue, String defaultValue) {
