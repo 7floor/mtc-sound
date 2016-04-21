@@ -62,6 +62,12 @@ public class MtcSoundService extends IMtcSoundService.Stub {
     }
 
     @Override
+    public void onRecording(String callerPackage, boolean active) throws RemoteException {
+        device.onRecording(active);
+        //showToast(callerPackage + " is " + (active ? "" : "not") + " recording");
+    }
+
+    @Override
     public void showToast(String text) throws RemoteException {
         final String t = text;
         handler.post(new Runnable() {

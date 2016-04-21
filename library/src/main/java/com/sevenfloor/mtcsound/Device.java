@@ -77,6 +77,7 @@ public class Device {
         addHandler(new PhoneOutHandler(this));
         addHandler(new GpsAltMixHandler(this));
         addHandler(new GsmAltInputHandler(this));
+        addHandler(new RecMuteHandler(this));
     }
 
     public String getParameters(String keyValue, String defaultValue) {
@@ -154,6 +155,11 @@ public class Device {
         if (state.gpsState.gpsIsAloud == aloud)
             return;
         state.gpsState.gpsIsAloud = aloud;
+        applyState();
+    }
+
+    public void onRecording(boolean active) {
+        state.recActive = active;
         applyState();
     }
 

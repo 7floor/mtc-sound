@@ -41,6 +41,7 @@
     <string name="setup_button_phone_rr">ЗП</string>
     <string name="setup_button_altgsm">GSM через Android</string>
     <string name="setup_button_altnavi">Альт. микс Навигации</string>
+    <string name="setup_button_recmute">Тихо при записи</string>
 
     <string name="input_phone">Телефон</string>
     <string name="input_sys">Система</string>

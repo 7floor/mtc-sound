@@ -3,7 +3,6 @@ package com.sevenfloor.mtcsound;
 import com.sevenfloor.mtcsound.state.DeviceState;
 import com.sevenfloor.mtcsound.state.EqualizerBand;
 import com.sevenfloor.mtcsound.state.Input;
-import com.sevenfloor.mtcsound.state.InputMode;
 import com.sevenfloor.mtcsound.state.PhoneState;
 import com.sevenfloor.mtcsound.state.SoundProfile;
 
@@ -259,7 +258,7 @@ public class HwInterface {
     }
 
     private void applyMute(DeviceState state) {
-        if (state.mute || state.getCurrentVolume().getValue() == 0) {
+        if (state.mute || state.getCurrentVolume().getValue() == 0 || (state.settings.recMute && state.recActive)) {
             InputGain.value = InputGain.value | (1 << 7);
             VolumeGain.value = 0xFF;
             FaderFrontRight.value = 0xFF;

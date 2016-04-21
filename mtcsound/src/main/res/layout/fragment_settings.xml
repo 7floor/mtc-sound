@@ -279,21 +279,37 @@
             </TableRow>
         </TableLayout>
         <TextView style="@style/large_label" android:layout_marginTop="@dimen/setup_header_margin" android:text="@string/setup_other"/>
-        <CheckBox
-            style="@style/medium_label"
-            android:id="@+id/setup_altgsm"
-            android:layout_marginTop="@dimen/checkbox_top_margin"
-            android:button="@null"
-            android:drawableTop="@drawable/radiobutton"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:text="@string/setup_button_altgsm" />
-        <CheckBox
-            style="@style/medium_label"
-            android:id="@+id/setup_altnavi"
-            android:layout_marginTop="@dimen/checkbox_top_margin"
-            android:button="@null"
-            android:drawableTop="@drawable/radiobutton"
-            android:layout_width="wrap_content"
-            android:text="@string/setup_button_altnavi" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <CheckBox
+                style="@style/medium_label"
+                android:id="@+id/setup_recmute"
+                android:layout_marginTop="@dimen/checkbox_top_margin"
+                android:button="@null"
+                android:drawableLeft="@drawable/radiobutton"
+                android:drawablePadding="@dimen/radio_padding"
+                android:layout_width="wrap_content"
+                android:text="@string/setup_button_recmute" />
+            <CheckBox
+                style="@style/medium_label"
+                android:id="@+id/setup_altgsm"
+                android:layout_marginTop="@dimen/checkbox_top_margin"
+                android:button="@null"
+                android:drawableLeft="@drawable/radiobutton"
+                android:drawablePadding="@dimen/radio_padding"
+                android:layout_width="wrap_content"
+                android:text="@string/setup_button_altgsm" />
+            <CheckBox
+                style="@style/medium_label"
+                android:id="@+id/setup_altnavi"
+                android:layout_marginTop="@dimen/checkbox_top_margin"
+                android:button="@null"
+                android:drawableLeft="@drawable/radiobutton"
+                android:drawablePadding="@dimen/radio_padding"
+                android:layout_width="wrap_content"
+                android:text="@string/setup_button_altnavi" />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout>

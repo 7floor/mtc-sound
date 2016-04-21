@@ -10,8 +10,9 @@ public class DeviceState {
     public final Settings settings = new Settings();
 
     public final InputMode inputMode = new InputMode();
-
     public boolean mute;
+    public boolean recActive;
+
     public final Volume volume = new Volume(settings.volumeRange);
     public final Volume phoneVolume = new Volume(settings.volumeRange);
     public final Balance balance = new Balance();

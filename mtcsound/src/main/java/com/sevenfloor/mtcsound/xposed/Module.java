@@ -10,8 +10,11 @@ import com.android.server.am.ActivityManagerService;
 import com.sevenfloor.mtcsound.service.IMtcSoundService;
 
 import android.media.AudioManager;
+import android.media.AudioRecord;
 import android.media.AudioTrack;
 import android.media.MediaPlayer;
+import android.media.MediaRecorder;
+import android.media.MediaSyncEvent;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.os.ServiceManager;
@@ -69,6 +72,8 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         patchAudioManager();
         patchMediaPlayer();
         patchAudioTrack();
+        patchMediaRecorder();
+        patchAudioRecord();
     }
 
     @Override
@@ -203,6 +208,78 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                         try {
                             getService().onAudioTrackEvent(packageName, AudioTrack.PLAYSTATE_PAUSED);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+    }
+
+    private void patchMediaRecorder() {
+
+        findAndHookMethod(MediaRecorder.class, "start",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            getService().onRecording(packageName, true);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+
+        findAndHookMethod(MediaRecorder.class, "stop",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            getService().onRecording(packageName, false);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+    }
+
+    private void patchAudioRecord() {
+
+        findAndHookMethod(AudioRecord.class, "startRecording",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            getService().onRecording(packageName, true);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+
+        findAndHookMethod(AudioRecord.class, "startRecording",
+                MediaSyncEvent.class,
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            getService().onRecording(packageName, true);
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+
+        findAndHookMethod(AudioRecord.class, "stop",
+                new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        try {
+                            getService().onRecording(packageName, false);
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }

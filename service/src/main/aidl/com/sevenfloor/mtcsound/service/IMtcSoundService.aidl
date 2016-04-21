@@ -5,5 +5,6 @@ interface IMtcSoundService {
     void setParameters(String paramString);
     void onMediaPlayerEvent(String callerPackage, int event);
     void onAudioTrackEvent(String callerPackage, int event);
+    void onRecording(String callerPackage, boolean active);
     void showToast(String text);
 }

@@ -14,7 +14,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
     private SeekBar subOutput, subCutOff, subPhase, subGain, volMin, volMax;
     private TextView subGainV, volMinV, volMaxV;
-    private CheckBox phoneFL, phoneFR, phoneRL, phoneRR, altNavi, altGsm;
+    private CheckBox phoneFL, phoneFR, phoneRL, phoneRR, altNavi, altGsm, recMute;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -45,6 +45,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
 
         (altNavi = (CheckBox)view.findViewById(R.id.setup_altnavi)).setOnClickListener(this);
         (altGsm = (CheckBox)view.findViewById(R.id.setup_altgsm)).setOnClickListener(this);
+        (recMute = (CheckBox)view.findViewById(R.id.setup_recmute)).setOnClickListener(this);
 
         return view;
     }
@@ -69,6 +70,7 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
     private void updateOther() {
         altNavi.setChecked("true".equals(audioManager.getParameters("cfg_gps_altmix=")));
         altGsm.setChecked("true".equals(audioManager.getParameters("cfg_gsm_altinput=")));
+        recMute.setChecked("true".equals(audioManager.getParameters("cfg_rec_mute=")));
     }
 
     private void updateBars() {
@@ -144,6 +146,9 @@ public class SettingsFragment extends BaseFragment implements View.OnClickListen
                 break;
             case R.id.setup_altgsm:
                 audioManager.setParameters("cfg_gsm_altinput=" + (altGsm.isChecked() ? "true" : "false"));
+                break;
+            case R.id.setup_recmute:
+                audioManager.setParameters("cfg_rec_mute=" + (recMute.isChecked() ? "true" : "false"));
                 break;
             case R.id.setup_phone_fl:
             case R.id.setup_phone_fr:

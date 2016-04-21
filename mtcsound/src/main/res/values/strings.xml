@@ -82,6 +82,7 @@
     <string name="setup_button_phone_rr">RR</string>
     <string name="setup_button_altgsm">GSM via Android</string>
     <string name="setup_button_altnavi">Alt. Navigation Mix</string>
+    <string name="setup_button_recmute">Mute on Record</string>
 
     <string name="input_phone">Phone</string>
     <string name="input_sys">System</string>
