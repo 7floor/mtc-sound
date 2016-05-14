@@ -56,6 +56,7 @@ public class DeviceState {
     }
 
     public boolean isPhone() {
-        return inputMode.phoneState != PhoneState.hangup;
+        // answer: in call; out: calling out
+        return inputMode.phoneState == PhoneState.answer || inputMode.phoneState == PhoneState.out;
     }
 }

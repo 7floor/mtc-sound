@@ -23,21 +23,8 @@ public class ChannelExitHandler extends ParameterHandler {
         if (device.state.inputMode.input == Input.sys)
             return value;
 
-        boolean wasMuted = device.state.mute;
-        if (!wasMuted && !device.state.isPhone()) {
-            device.state.mute = true;
-            device.applyState();
-            Utils.sleep(25);
-        }
-
         device.state.inputMode.input = Input.sys;
         device.applyState();
-
-        if (!wasMuted && device.state.mute) {
-            Utils.sleep(25);
-            device.state.mute = false;
-            device.applyState();
-        }
 
         device.notifyInputChange();
 
