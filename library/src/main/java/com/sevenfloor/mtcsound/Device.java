@@ -28,14 +28,21 @@ public class Device {
     private final HwInterface hardware = new HwInterface();
     private final Persister persister = new Persister();
     private boolean stateLoaded = false;
-    private boolean i2cMode;
+    private boolean i2cMode = false;
 
     public Device(Context context) {
         this.context = context;
 
         addHandler(new ControlModeHandler(this));
 
-        i2cMode = checkHardware();
+        for(int attempts = 3; attempts > 0; attempts--) {
+            i2cMode = checkHardware();
+            if (i2cMode) break;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+            }
+        }
 
         addHandler(new PowerHandler(this));
 
