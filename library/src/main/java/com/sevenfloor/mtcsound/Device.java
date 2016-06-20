@@ -25,24 +25,14 @@ public class Device {
     private final Object lock = new Object();
     public final DeviceState state = new DeviceState();
     private final Map<String, ParameterHandler> handlers = new HashMap<>();
-    private final HwInterface hardware = new HwInterface();
     private final Persister persister = new Persister();
+    private HwInterface hardware = null;
     private boolean stateLoaded = false;
-    private boolean i2cMode = false;
 
     public Device(Context context) {
         this.context = context;
 
         addHandler(new ControlModeHandler(this));
-
-        for(int attempts = 3; attempts > 0; attempts--) {
-            i2cMode = checkHardware();
-            if (i2cMode) break;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-            }
-        }
 
         addHandler(new PowerHandler(this));
 
@@ -85,6 +75,8 @@ public class Device {
         addHandler(new GpsAltMixHandler(this));
         addHandler(new GsmAltInputHandler(this));
         addHandler(new RecMuteHandler(this));
+
+        init();
     }
 
     public String getParameters(String keyValue, String defaultValue) {
@@ -170,32 +162,50 @@ public class Device {
         applyState();
     }
 
+    public void checkHardware() {
+        if (hardware == null) return;
+        hardware.check();
+        setModeAndStatus(hardware.isOnline(), hardware.getStateDescription());
+    }
+
     public void applyState() {
         applyState(false);
     }
 
     public void applyState(boolean forced) {
-        if (i2cMode)
-            hardware.applyState(state, forced);
         persister.writeState(context, state);
+        if (hardware == null) return;
+        hardware.applyState(state, forced);
+        setModeAndStatus(hardware.isOnline(), hardware.getStateDescription());
     }
 
     public void notifyInputChange(){
         context.sendBroadcast(new Intent("com.microntek.inputchange"));
     }
 
-    private void checkStateLoaded() {
-        if (stateLoaded)
+    private void init() {
+        String message = SoftwareChecker.check();
+        if (message != null) {
+            setModeAndStatus(false, message);
             return;
-        persister.readState(context, state);
-        if (i2cMode)
-            hardware.applyState(state, true);
-        stateLoaded = true;
+        }
+
+        hardware = new HwInterface(SoftwareChecker.getFileNames());
+        setModeAndStatus(hardware.isOnline(), hardware.getStateDescription());
     }
 
-    private boolean checkHardware() {
-        state.HardwareStatus = hardware.CheckHardware();
-        return state.HardwareStatus.startsWith("i2c");
+    private void checkStateLoaded() {
+        if (stateLoaded) return;
+        persister.readState(context, state);
+        stateLoaded = true;
+        if (hardware == null) return;
+        hardware.applyState(state, true);
+        setModeAndStatus(hardware.isOnline(), hardware.getStateDescription());
+    }
+
+    private void setModeAndStatus(boolean i2cMode, String status)
+    {
+        state.ModeAndStatus =  String.format("%s, %s", i2cMode ? "i2c" : "mcu", status);
     }
 
     private void addHandler(ParameterHandler handler){

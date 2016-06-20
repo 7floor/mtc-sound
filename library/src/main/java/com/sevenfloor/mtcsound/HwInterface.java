@@ -1,13 +1,14 @@
 package com.sevenfloor.mtcsound;
 
+import android.util.Log;
+
 import com.sevenfloor.mtcsound.state.DeviceState;
 import com.sevenfloor.mtcsound.state.EqualizerBand;
 import com.sevenfloor.mtcsound.state.Input;
-import com.sevenfloor.mtcsound.state.PhoneState;
 import com.sevenfloor.mtcsound.state.SoundProfile;
 
-import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 
 public class HwInterface {
 
@@ -53,34 +54,52 @@ public class HwInterface {
 
     private final Register[] AllRegisters = new Register[] { R01, R02, R03, R05, R06, R20, R28, R29, R2A, R2B, R2C, R30, R41, R44, R47, R51, R54, R57, R75 };
 
-    public String CheckHardware() {
-        if (!checkDevI2cFile(0)) {
-            tryLoadDriver();
-        }
-        if (!checkDevI2cFile(0)) {
-            return "mcu,No device driver i2c-dev";
-        }
+    private List<String> fileNames;
+    private String fileName = null;
+    private String stateMessage;
 
-        String lastError = "";
-        for(int i = 0; i < 10; i++)
-        {
-            if (!checkDevI2cFile(i)) continue; // don't check files that don't exist
+    public HwInterface(List<String> fileNames) {
+        this.fileNames = fileNames;
+        check();
+    }
 
-            if (I2cBus.getDevFileAccess(i) != 0) {
-                lastError = "No access to /dev/i2c-?; " + I2cBus.lastError;
-                continue;
+    public boolean isOnline() {
+        return fileName != null;
+    }
+
+    public String getStateDescription() {
+        if (fileName != null)
+            return "Controlling via " + fileName;
+        return stateMessage;
+    }
+
+    public void check() {
+        if (fileName != null) return;
+        Log.i(Utils.logTag, "Checking hardware");
+        stateMessage = "No accessible device files";
+        fileName = null;
+        for (String fn: fileNames) {
+            stateMessage = I2cBus.write(fn, 0x40,new byte[][]{{0x01}});
+            if (stateMessage == null) {
+                Log.i(Utils.logTag, String.format("Checking %s - Success", fn));
+                fileName = fn;
+                Log.i(Utils.logTag, getStateDescription());
+                return;
+            } else {
+                Log.e(Utils.logTag, String.format("Checking %s - %s", fn, stateMessage));
             }
-
-            int errno = I2cBus.write(0x40,new byte[][]{{0x01}});
-            if (errno == 0) return "i2c,Channel " + i;
-            lastError = I2cBus.lastError;
-            if ((errno == 11 || errno == 110) && lastError.contains("write")) // EAGAIN (3188) || ETIMEOUT (3066)
-                lastError = lastError + " (no response from i2c slave)";
         }
-        return "mcu," + lastError;
+        stateMessage = "Error checking hardware: " + stateMessage;
+        Log.i(Utils.logTag, getStateDescription());
     }
 
     public void applyState(DeviceState state, boolean forced) {
+        if (fileName == null) {
+            check();
+            if (fileName == null) return;
+            forced = true; // if connected for the first time
+        }
+
         applySettings(state);
 
         applyMixingGain(state);
@@ -279,7 +298,7 @@ public class HwInterface {
                 r.flush();
             }
         }
-        I2cBus.write(0x40, buffer.toArray(new byte[][]{}));
+        I2cBus.write(fileName, 0x40, buffer.toArray(new byte[][]{}));
     }
 
     private void writeAllRegistersToI2C() {
@@ -292,38 +311,28 @@ public class HwInterface {
             buffer[i + 1] = (byte) r.value;
             r.flush();
         }
-        I2cBus.write(0x40, new byte[][]{buffer});
+        I2cBus.write(fileName, 0x40, new byte[][]{buffer});
     }
 
-    private static boolean checkDevI2cFile(int channel) {
-        File f = new File("/dev/i2c-" + channel);
-        return f.exists();
-    }
+    private class Register {
+        int index;
+        int lastValue;
+        int value;
 
-    private static void tryLoadDriver() {
-        try {
-            Process process = Runtime.getRuntime().exec(new String[]{"su", "-c", "insmod /system/lib/modules/i2c-dev.ko"});
-            process.waitFor();
-        } catch (Throwable ignored) {}
-    }}
+        public Register(int index, int defaultValue){
+            this.index = index;
+            this.value = defaultValue;
+            this.lastValue = -1; // so that first time it will be written forcibly
+        }
 
-class Register {
-    int index;
-    int lastValue;
-    int value;
+        public boolean isChanged() {
+            return lastValue != value;
+        }
 
-    public Register(int index, int defaultValue){
-        this.index = index;
-        this.value = defaultValue;
-        this.lastValue = -1; // so that first time it will be written forcibly
-    }
-
-    public boolean isChanged() {
-        return lastValue != value;
-    }
-
-    public void flush(){
-        lastValue = value;
+        public void flush(){
+            lastValue = value;
+        }
     }
 
 }
+

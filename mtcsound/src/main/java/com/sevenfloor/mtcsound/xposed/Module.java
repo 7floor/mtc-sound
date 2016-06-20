@@ -61,7 +61,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected final void afterHookedMethod(final MethodHookParam param) {
                         try {
-                            XposedBridge.log(String.format("The Sound Control Status is: %s", getService().getParameters("av_control_mode=")));
+                            logControlMode(getService().getParameters("av_control_mode="));
                         } catch (Throwable t) {
                             XposedBridge.log(t);
                         }
@@ -91,7 +91,12 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                         try {
-                            return getService().getParameters((String) methodHookParam.args[0]);
+                            String param = (String) methodHookParam.args[0];
+                            String result = getService().getParameters(param);
+                            if (param.startsWith("av_control_mode")) {
+                                logControlMode(result);
+                            }
+                            return result;
                         } catch (RemoteException e) {
                             XposedBridge.log("Can't call getParameters() on MtcSoundService due to " + e);
                             return "";
@@ -104,7 +109,8 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
                         try {
-                            getService().setParameters((String) methodHookParam.args[0]);
+                            String param = (String) methodHookParam.args[0];
+                            getService().setParameters(param);
                         } catch (RemoteException e) {
                             XposedBridge.log("Can't call setParameters() on MtcSoundService due to " + e);
                         }
@@ -393,6 +399,10 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
         ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
         return componentInfo.getPackageName().equals(PACKAGE_NAME);
+    }
+
+    private static void logControlMode(String mode) {
+        XposedBridge.log(String.format("The Sound Control Status is: %s", mode));
     }
 
     // constants copied from the MedaiPlayer (only those used here)

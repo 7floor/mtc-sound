@@ -19,6 +19,7 @@ public class ControlModeHandler extends ParameterHandler {
 
     @Override
     public String get(String value) {
-        return device.state.HardwareStatus;
+        device.checkHardware();
+        return device.state.ModeAndStatus;
     }
 }

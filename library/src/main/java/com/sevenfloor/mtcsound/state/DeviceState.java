@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class DeviceState {
 
-    public String HardwareStatus = "";
+    public String ModeAndStatus = "";
 
     public final Settings settings = new Settings();
 

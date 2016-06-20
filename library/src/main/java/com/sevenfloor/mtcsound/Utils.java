@@ -2,6 +2,8 @@ package com.sevenfloor.mtcsound;
 
 public class Utils {
 
+    public static String logTag = "mtcsound";
+
     public static Integer stringToInt(String value)
     {
         try{
