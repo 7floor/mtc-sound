@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 
 import com.android.server.am.ActivityManagerService;
+import com.sevenfloor.mtcsound.BuildConfig;
 import com.sevenfloor.mtcsound.service.IMtcSoundService;
 
 import android.media.AudioManager;
@@ -34,7 +35,6 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage;
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
 
 public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
-    private static final String PACKAGE_NAME = "com.sevenfloor.mtcsound";
     private static IMtcSoundService service;
     private static String packageName = "";
 
@@ -61,6 +61,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
                     @Override
                     protected final void afterHookedMethod(final MethodHookParam param) {
                         try {
+                            XposedBridge.log(String.format("MTC Sound version: %s", BuildConfig.VERSION_NAME));
                             logControlMode(getService().getParameters("av_control_mode="));
                         } catch (Throwable t) {
                             XposedBridge.log(t);
@@ -369,7 +370,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
             @Override
             protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
                 if ("com.microntek.ampsetup".equals(param.args[0]))
-                    param.args[0] = PACKAGE_NAME;
+                    param.args[0] = BuildConfig.APPLICATION_ID;
             }
         };
     }
@@ -383,7 +384,7 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     }
 
     private static void startEqualizer(Context context) {
-        Intent intent = context.getPackageManager().getLaunchIntentForPackage(PACKAGE_NAME);
+        Intent intent = context.getPackageManager().getLaunchIntentForPackage(BuildConfig.APPLICATION_ID);
         if (intent != null) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             context.startActivity(intent);
@@ -398,11 +399,11 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         ActivityManager manager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> runningTaskInfo = manager.getRunningTasks(1);
         ComponentName componentInfo = runningTaskInfo.get(0).topActivity;
-        return componentInfo.getPackageName().equals(PACKAGE_NAME);
+        return componentInfo.getPackageName().equals(BuildConfig.APPLICATION_ID);
     }
 
     private static void logControlMode(String mode) {
-        XposedBridge.log(String.format("The Sound Control Status is: %s", mode));
+        XposedBridge.log(String.format("MTC Sound status: %s", mode));
     }
 
     // constants copied from the MedaiPlayer (only those used here)
