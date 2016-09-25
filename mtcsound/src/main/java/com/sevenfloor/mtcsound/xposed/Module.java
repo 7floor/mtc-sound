@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 
-import com.android.server.am.ActivityManagerService;
 import com.sevenfloor.mtcsound.BuildConfig;
 import com.sevenfloor.mtcsound.service.IMtcSoundService;
 
@@ -22,6 +21,7 @@ import android.os.ServiceManager;
 
 import com.sevenfloor.mtcsound.service.MtcSoundService;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
@@ -33,6 +33,9 @@ import de.robv.android.xposed.XposedHelpers;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 import static de.robv.android.xposed.XposedHelpers.findAndHookMethod;
+import static de.robv.android.xposed.XposedHelpers.findMethodBestMatch;
+import static de.robv.android.xposed.XposedHelpers.findMethodExact;
+import static de.robv.android.xposed.XposedHelpers.findMethodsByExactParameters;
 
 public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
     private static IMtcSoundService service;
@@ -40,36 +43,6 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
-
-        XposedBridge.hookAllMethods(ActivityManagerService.class, "main",
-                new XC_MethodHook() {
-                    @Override
-                    protected final void afterHookedMethod(final XC_MethodHook.MethodHookParam param) {
-                        try {
-                            Context context = (Context) param.getResult();
-                            MtcSoundService serviceInstance = new MtcSoundService(context);
-                            ServiceManager.addService(MtcSoundService.SERVICE_NAME, serviceInstance);
-                        } catch (Throwable t) {
-                            XposedBridge.log(t);
-                        }
-                    }
-                }
-        );
-
-        XposedBridge.hookAllMethods(ActivityManagerService.class, "systemReady",
-                new XC_MethodHook() {
-                    @Override
-                    protected final void afterHookedMethod(final MethodHookParam param) {
-                        try {
-                            XposedBridge.log(String.format("MTC Sound version: %s", BuildConfig.VERSION_NAME));
-                            logControlMode(getService().getParameters("av_control_mode="));
-                        } catch (Throwable t) {
-                            XposedBridge.log(t);
-                        }
-                    }
-                }
-        );
-
         patchAudioManager();
         patchMediaPlayer();
         patchAudioTrack();
@@ -77,12 +50,38 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         patchAudioRecord();
     }
 
+    void injectSystemService(ClassLoader classLoader) {
+        Class<?> ams = XposedHelpers.findClass("com.android.server.am.ActivityManagerService", classLoader);
+
+        XposedBridge.hookAllMethods(ams, "systemReady",
+                new XC_MethodHook() {
+                    @Override
+                    protected final void afterHookedMethod(final MethodHookParam param) {
+                        try {
+                            XposedBridge.log(String.format("MTC Sound version: %s", BuildConfig.VERSION_NAME));
+                            Context context = (Context) XposedHelpers.getObjectField(param.thisObject, "mContext");
+                            MtcSoundService serviceInstance = new MtcSoundService(context);
+                            ServiceManager.addService(MtcSoundService.SERVICE_NAME, serviceInstance);
+                            logControlMode(getService().getParameters("av_control_mode="));
+                        } catch (Throwable t) {
+                            XposedBridge.log(t);
+                        }
+                    }
+                }
+        );
+    }
+
     @Override
     public void handleLoadPackage(final XC_LoadPackage.LoadPackageParam loadPackageParam) throws Throwable {
         packageName = loadPackageParam.packageName;
+
+        if ("android".equals(packageName)) {
+            injectSystemService(loadPackageParam.classLoader);
+        }
+
         patchMTCManager(loadPackageParam);
-        patchMTCAmpSetup(loadPackageParam);
         patchMTCBackView(loadPackageParam);
+        patchMTCAmpSetup(loadPackageParam);
     }
 
     // patch AudioManager to replace getParameters/setParameters
@@ -302,42 +301,102 @@ public class Module implements IXposedHookZygoteInit, IXposedHookLoadPackage {
         if (!"android.microntek.service".equals(loadPackageParam.packageName))
             return;
 
+        final String wrongDeviceMessage = "Wrong Device: unknown MTCManager app (will not start Equalizer by hardware button)";
+
         try {
-            findAndHookMethod("android.microntek.service.MicrontekServer", loadPackageParam.classLoader, "EQSwitch",
-                    new XC_MethodReplacement() {
-                        @Override
-                        protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
-                            Context context = (Context) methodHookParam.thisObject;
-                            if (isEqualizerOnTop(context)) {
-                                stopEqualizer(context);
-                            } else {
-                                startEqualizer(context);
-                            }
-                            return null;
-                        }
-                    });
-        } catch (XposedHelpers.ClassNotFoundError e) {
-            XposedBridge.log("Wrong Device: class android.microntek.service.MicrontekServer not found.");
+            String cName = "android.microntek.service.MicrontekServer";
+            XposedBridge.log("Attempting to patch class " + cName);
+
+            Method method = null;
+            for (String mName : new String[]{"EQSwitch", "E"}) {
+                try {
+                    method = findMethodExact(cName, loadPackageParam.classLoader, mName);
+                    XposedBridge.hookMethod(method,
+                            new XC_MethodReplacement() {
+                                @Override
+                                protected Object replaceHookedMethod(MethodHookParam methodHookParam) throws Throwable {
+                                    Context context = (Context) methodHookParam.thisObject;
+                                    if (isEqualizerOnTop(context)) {
+                                        stopEqualizer(context);
+                                    } else {
+                                        startEqualizer(context);
+                                    }
+                                    return null;
+                                }
+                            });
+                    XposedBridge.log("Hooked method " + mName);
+                    break;
+                } catch (XposedHelpers.ClassNotFoundError e) {
+                    break; // no need to search further
+                } catch (NoSuchMethodError e) {
+                    // will try next method
+                }
+            }
+            if (method == null) {
+                throw new Exception(wrongDeviceMessage);
+            }
+        } catch (Exception e) {
+            XposedBridge.log(e.getMessage());
         }
     }
 
-    // Patch MtcAmpSetup to launch our package
+    // Patch MtcAmpSetup/ hct.AmpSetup to launch our package
     private void patchMTCAmpSetup(final XC_LoadPackage.LoadPackageParam loadPackageParam) {
 
         if (!"com.android.settings".equals(loadPackageParam.packageName))
             return;
 
-        try {
-            findAndHookMethod("com.android.settings.MtcAmpSetup", loadPackageParam.classLoader, "isPackageInstalled",
-                    String.class,
-                    PackageManager.class,
-                    mtcAmpSetupParameterReplacer());
+        final String wrongDeviceMessage = "Wrong Device: unknown Settings app (will not start Equalizer from Settings)";
 
-            findAndHookMethod("com.android.settings.MtcAmpSetup", loadPackageParam.classLoader, "RunApp",
-                    String.class,
-                    mtcAmpSetupParameterReplacer());
-        } catch (XposedHelpers.ClassNotFoundError e) {
-            XposedBridge.log("Wrong Device: class com.android.settings.MtcAmpSetup not found.");
+        try {
+            Class<?> clazz = null;
+
+            for (String cName: new String[]{"com.android.settings.MtcAmpSetup", "com.android.settings.hct.AmpSetup"}) {
+                try {
+                    clazz = XposedHelpers.findClass(cName, loadPackageParam.classLoader);
+                    XposedBridge.log("Found class " + cName);
+                    break;
+                }
+                catch (XposedHelpers.ClassNotFoundError e) {
+                }
+            }
+
+            if (clazz == null) {
+                throw new Exception(wrongDeviceMessage);
+            }
+
+            Method method = null;
+            for (String mName : new String[]{"isPackageInstalled", "a"}) {
+                try {
+                    method = findMethodExact(clazz, mName, String.class, PackageManager.class);
+                    XposedBridge.hookMethod(method, mtcAmpSetupParameterReplacer());
+                    XposedBridge.log("Hooked method " + mName);
+                    break;
+                } catch (NoSuchMethodError e) {
+                }
+            }
+
+            if (method == null) {
+                throw new Exception(wrongDeviceMessage);
+            }
+
+            method = null;
+            for (String mName : new String[]{"RunApp", "aF"}) {
+                try {
+                    method = findMethodExact(clazz, mName, String.class);
+                    XposedBridge.hookMethod(method, mtcAmpSetupParameterReplacer());
+                    XposedBridge.log("Hooked method " + mName);
+                    break;
+                } catch (NoSuchMethodError e) {
+                }
+            }
+
+            if (method == null) {
+                throw new Exception(wrongDeviceMessage);
+            }
+
+        } catch (Exception e) {
+            XposedBridge.log(e.getMessage());
         }
     }
 
