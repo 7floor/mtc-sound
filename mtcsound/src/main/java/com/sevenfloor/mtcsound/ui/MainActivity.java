@@ -10,7 +10,9 @@ import android.content.IntentFilter;
 import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
+import com.sevenfloor.mtcsound.BuildConfig;
 import com.sevenfloor.mtcsound.R;
 
 public class MainActivity extends Activity {
@@ -46,6 +48,8 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ((TextView)findViewById(R.id.nav_version)).setText(BuildConfig.VERSION_NAME);
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         String controlMode = audioManager.getParameters("av_control_mode=");

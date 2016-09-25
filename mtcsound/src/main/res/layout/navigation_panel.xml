@@ -39,4 +39,11 @@
         android:clickable="true"
         android:onClick="navigationButtonClicked"
         android:drawableTop="@drawable/nav_button_settings" />
+    <TextView
+        style="@style/medium_label"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:gravity="bottom|center"
+        android:id="@+id/nav_version"
+        />
 </LinearLayout>
